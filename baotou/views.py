@@ -48,3 +48,30 @@ def standing_book_table(request):
     cursor.execute("SELECT * FROM sde_hf.dbo.jkx_taizhang") 
     data_json = json.dumps(cursor.fetchall())
     return JsonResponse(data_json,safe=False)
+
+def fault_terminal_chart(request):
+
+    cursor = sql_server_connect(True)
+    cursor.execute("SELECT DISTINCT errname,COUNT(errname) as number FROM DataErr GROUP BY errname") 
+    data_json = json.dumps(cursor.fetchall())
+    return JsonResponse(data_json,safe=False)
+
+def fault_lamp_chart(request):
+
+    cursor = sql_server_connect(True)
+    cursor.execute("SELECT DISTINCT errname,COUNT(errname) as number FROM DataErr GROUP BY errname") 
+    data_json = json.dumps(cursor.fetchall())
+    return JsonResponse(data_json,safe=False)
+
+def fault_factory_chart(request):
+
+    cursor = sql_server_connect(True)
+    cursor.execute("SELECT DISTINCT errname,COUNT(errname) as number FROM DataErr GROUP BY errname") 
+    data_json = json.dumps(cursor.fetchall())
+    return JsonResponse(data_json,safe=False)
+
+
+
+
+
+

@@ -51,8 +51,7 @@ function fault_chart(data){
     var yaxis = new Array();
 
     for(var i = 0;i < data.length;i++){
-            xaxis[i] = fault_type_flag == "factory" ? data[i].facname
-                            : data[i].errname;
+            xaxis[i] =  data[i].errname;
             yaxis[i] = data[i].number;
                    
     }
@@ -96,7 +95,8 @@ function fault_chart(data){
     var data_pie = [];
     var obname;
     for(i = 0;i < data.length;i++){
-            obname = fault_type_flag == "factory" ? data[i].facname : data[i].errname;
+            keyname = Object.keys(data[0]);
+            obname = data[i][keyname[0]];
             data_pie.push({"value":data[i].number,"name":obname});
     }
     option_pie = {
@@ -283,16 +283,16 @@ function fault_table(data){
 }
 */
 
-function get_fault_data(type,fault_type){
+function get_fault_data(fault_data_type,type){
 
     $.ajax({
-        type: "POST",
-        url: "WebService1.asmx/fault_type_number",
-        data:"{fault_type:'"+fault_type+"',type:'"+type+"'}",
+        type: "GET",
+        url: fault_data_type,
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function (json) {
-                var data = eval(json.d);
+
+                var data = eval(json);
                 if(type == "chart")
                     fault_chart(data);
                 else
@@ -307,27 +307,29 @@ function get_fault_data(type,fault_type){
 function fault_terminal(){
         fault_type_flag = "terminal";
         if(fault_show_type == "chart")
-            show_chart();
+            show_chart("fault_terminal_chart");
         else
-            show_table();
+//            show_table("fault_terminal_table");
         show_fault();
 }
 
 function fault_lamp(){
+
         fault_type_flag = "lamp";
         if(fault_show_type == "chart")
-            show_chart();
+            show_chart("fault_lamp_chart");
         else
             show_table();
         show_fault();
 }
 
 function fault_factory(){
+
         fault_type_flag = "factory";
         if(fault_show_type == "chart")
-            show_chart();
+            show_chart("fault_factory_chart");
         else
-            show_table();
+//            show_table("fault");
         show_fault();
 }
 
@@ -335,14 +337,14 @@ function close_fault(){
     $("#fault_statistics").css("display","none");
 }
 
-function show_chart(){
+function show_chart(fault_data_type){
         $("#detail_all").css("overflow","visible");
         $("#detail_all").html('<div id="detail_chart_title_pie"> <div id="detail_chart_pie"> \
                 </div><div id="pie_title">故<br>障<br>类<br>型<br>饼<br>状<br>图</div> \
                 <div id="detail_chart_bar"></div><div id="bar_title">故<br>障<br>类<br>型 \
                 <br>直<br>方<br>图</div> </div>');
         fault_show_type = "chart";
-        get_fault_data("chart",fault_type_flag);
+        get_fault_data(fault_data_type,"chart");
 }
 function show_table(){
         $("#detail_all").html("");

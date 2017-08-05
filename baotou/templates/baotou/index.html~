@@ -216,7 +216,7 @@
                     <div class="div_title" id="rtu_title">
                             <span>终端列表</span>
                             <span>集中器列表</span>
-                            <img src="{% static 'baotou/images/gis/close.png' %}" onclick="mobile_control_close()"
+                            <img src="{% static 'baotou/image/gis/close.png' %}" onclick="mobile_control_close()"
                                  class="button_close" />
                     </div>
                     <div id="terminal_and_lamp">
@@ -257,6 +257,32 @@
                     </div>
             </div>
                                
+
+            <div class = "div_menu" id="fault_statistics" >
+                    <div class = "div_title" id="fault_title">
+                            <span>故障统计</span>
+                            <img src = "{% static 'image/gis/close.png' %}" class = "button_close" onclick = "close_fault()" />
+                    </div>
+                    <div id= "fault_tools">
+                         <button  class="btn fault-btn btn-primary" style="padding:4px 25px;"
+                                 onclick="show_chart()">图线</button>
+                         <button class="btn btn-default fault-btn" style="padding:4px 25px;"
+                                 onclick="show_table()">表格</button>
+                         <div id="fault_date_select">
+                               <span id="text_datetime">查询日期</span> 
+                               <input id = "fault_start" class="select_time" 
+                                       onfocus = "WdatePicker({startDate:'%y-%M-01 00:00:00',
+                                             dateFmt:'yyyy-MM-dd HH:mm:ss',
+                                                       alwaysUseStartDate:true})" />
+                               <span>至:</span>
+                               <input  id = "fault_end" class="select_time" 
+                                       onfocus = "WdatePicker({startDate:'%y-%M-01 00:00:00',
+                                             dateFmt:'yyyy-MM-dd HH:mm:ss',alwaysUseStartDate:true})" />
+                         </div>
+                    </div>
+                    <div id = "detail_all"> </div>
+            </div>
+
                             
 
 
