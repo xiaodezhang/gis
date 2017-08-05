@@ -384,29 +384,6 @@ function mobile_control_show(){
         }
 }
 
-/*
-function terminal_table_show(){
-
-    $.ajax({
-        type: "POST",
-        url: "WebService1.asmx/terminal_data",
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (json) {
-                alert("test ajax");
-                /*
-                var data = eval(json.d);
-                terminal_table_create(data);
-                */
-        },
-        error:function(){
-                alert("fault error");
-        }
-    });
-
-}
-*/
-
 function terminal_table_show(){
 
     $.ajax({
@@ -415,11 +392,9 @@ function terminal_table_show(){
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function (json) {
-                alert("test ajax");
-                /*
-                var data = eval(json.d);
+
+                var data = eval(json);
                 terminal_table_create(data);
-                */
         },
         error:function(){
                 alert("fault error");
@@ -545,13 +520,13 @@ function standing_book_close(){
 function standing_book_chart(db_table_name,value){
 
     $.ajax({
-        type: "POST",
-        url: "WebService1.asmx/GetSheShiNum",
-        data: "{Table:'" + db_table_name + "',value:'" + value + "'}",
+        type: "GET",
+        url: "standing_book_chart",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function (json) {
-            var c = eval(json.d);
+            var c = eval(json);
+
             if (c == null || c.length <= 0) {
                 return;
             }
@@ -626,17 +601,16 @@ function standing_book_chart(db_table_name,value){
 function standing_book_table(db_table_name){
 
     $.ajax({
-            type: "POST",
-            url: "WebService1.asmx/GetSheShiInfo",
-            data: "{Table:'" + db_table_name + "'}",
+            type: "GET",
+            url: "stangding_book_table",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function (json) {
-                var data = eval(json.d);
+
+                var data = eval(json);
                 if (data == null || data.length <= 0) {
                     return;
                 }
-
                 var table = document.getElementById("table_standing");
                 var thead = table.getElementsByTagName("thead")[0];
                 var tbody = table.getElementsByTagName("tbody")[0];
