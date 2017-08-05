@@ -1,0 +1,227 @@
+
+#mian {
+	margin: 0;
+	min-width: 1200px;
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+
+.nav_bar {
+	display: flex;
+	height: 80px;
+	background-image: url('../images/gis/nav_top_bg.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+}
+
+.nav_bar .left_section {
+	width: 400px;
+}
+
+.nav_bar .right_section {
+	display: flex;
+	flex-direction: row-reverse; 
+	flex: 1;
+	padding-right: 30px;
+}
+
+.right_section .operate_item {
+	margin: auto 20px;
+	width: 20px;
+	height: 20px;
+	opacity: .9;
+	cursor: pointer;
+}
+
+.right_section .operate_item:hover {
+	opacity: 1;
+}
+
+.nav_bar .menu_icon {
+	width: 22px;
+	opacity: .9;
+	cursor: pointer;
+	margin-left: 23px;
+} 
+
+.nav_bar .menu_icon:hover {
+	opacity: 1;
+}
+
+.nav_bar .home_title {
+	display: inline-block;
+	font-family: '黑体';
+	font-size: 28px;
+	color: #fff;
+	line-height: 80px;
+	text-indent: 12px;
+}
+
+.main_content {
+	display: flex;
+}
+
+.main_content .left_bar {
+	min-height: calc(100vh - 80px);
+	width: 230px;
+	padding-top: 6px;
+	background-color: #4C4F5B;
+	color: #dadada;
+	font-size: 16px;
+	transition: all 318ms ease-out;
+}
+
+.menu_list_name {
+	display: inline-block;
+	width: 230px;
+	height: 50px;
+	line-height: 50px;
+	text-indent: 20px;
+	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+	transition: all 218ms ease-out; 
+}
+
+.menu_list
+{
+    margin-left:-20px;
+}
+
+.active_list {
+
+}
+
+.sub_menu_container {
+	height: 0;
+	overflow: hidden;
+	margin-left:-20px;
+	transition: all 218ms ease-out;
+}
+
+.sub_menu_container .sub_menu_list {
+	height: 50px;
+	line-height: 50px;
+	text-indent: 30px;
+	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+	transition: all 218ms ease-out; 
+}
+
+.active_sub_list {
+	 color: #75BCF5 !important;
+	 background-color: #3B3F4B;
+}
+
+.sub_menu_container .sub_menu_list:hover {
+	color: #75BCF5;
+}
+
+.menu_list_name:hover {
+	color: #75BCF5;
+}
+
+.main_content .right_bar {
+	flex: 1;
+	/*position: relative;*/
+	transition: all .8s ease-out;
+}
+
+.tag_page {
+	position: absolute;
+	z-index: 20;
+	display: none;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.list_icon {
+	width: 18px;
+	margin-right: 4px;
+ 	margin-bottom: -3px;
+} 
+
+.list_array {
+	width: 16px;
+	/*float: right;*/
+	vertical-align: middle;
+	margin: 0px 12px 1px 12px;
+	transition: all 218ms ease-out;
+}
+
+.active_list .list_array {
+	transform: rotate(90deg);
+}
+
+.close_menu {
+	width: 0 !important;
+	overflow: hidden;
+}
+
+.main_content .explore_nav_tab {
+	display: flex;
+	width: 100%;
+	color: #333;
+	font-size: 12px;
+	border-bottom: 1px solid #095dc1;
+}
+
+.frame_tab_toggle {
+	flex: 1;
+	max-width: 130px;
+	height: 18px;
+	line-height: 1;
+	background-color: rgba(245, 245, 245, .8);
+	color: #095dc1;
+	border-right: 1px solid #095dc1;
+	cursor: default;
+}
+.active_frame_tab_toggle {
+	background-color: #095dc1;
+	color: #fff;
+}
+.frame_tab_toggle .frame_title {
+	display: inline-block;
+	width: 110px;
+	height: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	vertical-align: middle;
+	padding-top: 2px;
+	text-indent: 10px;
+}
+.frame_tab_toggle .icon-close {
+	cursor: default;
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	line-height: 12px;
+	margin-top: 2px;
+	font-size: 10px;
+	text-align: center;
+	transition: all 118ms ease-out;
+	border-radius: 7px;
+}
+
+.frame_tab_toggle .icon-close:hover {
+	background-color: #a70303;
+	color: #fff;
+}
+
+.explore_nav_tab .icon-close:before { content: "\e659"; }
+
+.current_tag_page {
+	display: block;
+}
+
+.right_bar .map_background {
+	height: 100%;
+	width: 100%;
+	border: 0;
+	position: absolute;
+	z-index: 10;
+}

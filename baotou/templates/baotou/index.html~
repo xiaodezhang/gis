@@ -1,0 +1,268 @@
+<html>
+<head>
+
+    {% load static %}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>包头绿色照明地理信息系统</title>
+    <link rel="stylesheet" type="text/css" href="http://114.80.168.38:64813/arcgis_js_api/library/3.6/3.6/js/esri/css/esri.css" />
+    <link rel="stylesheet" type="text/css" href="http://114.80.168.38:64813/arcgis_js_api/library/3.6/3.6/js/dojo/dijit/themes/claro/claro.css" />
+    <link rel="stylesheet" type="text/css" href="{% static 'baotou/css/bootstrap.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'baotou/css/style.css' %}" />
+    <script type="text/javascript" src="{% static 'baotou/js/jquery-1.9.1.js' %}"></script>
+    <script type="text/javascript" src="http://114.80.168.38:64813/arcgis_js_api/library/3.6/3.6/init.js"></script>
+
+    <script type="text/javascript" src="{% static 'baotou/js/echarts-all.js' %}"></script>
+    <script type="text/javascript" src="{% static 'baotou/js/bootstrap.js' %}"></script>
+    <script type="text/javascript" src="{% static 'baotou/js/map.js' %}"></script>
+    <script type="text/javascript" src="{% static 'baotou/js/index.js' %}"></script>
+    <script type="text/javascript" src="{% static 'baotou/js/project.js' %}"></script>
+</head>
+<body>
+    <div id="nav_bar">
+	    <div id="left_section">
+			<span id="home_title">包头绿色照明地理信息系统</span>
+            <img id="menu_icon" src="{% static 'baotou/image/gis/menu.png' %}" />
+		</div>
+		<div id="right_section">
+                <img class="operate_item" src="{% static 'baotou/image/gis/account.png' %}" />
+                <img class="operate_item" src="{% static 'baotou/image/gis/operate.png' %}" />
+                <img class="operate_item" src="{% static 'baotou/image/gis/msg.png' %}" />
+		</div>
+	</div>
+
+    <div id="main_content">
+            <div id="left_bar">
+                    <ul id="menu_container" class="list-group">
+				<li class="menu_list" class="list-group-item">
+					<div class="menu_list_name">
+                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" />
+						设施管理
+                        <img class="list_array" src="{% static 'baotou/image/gis/array.png' %}" />
+					</div>
+					<ul class="sub_menu_container">
+						<li class="sub_menu_list" onmousedown="layers_control_show()">分层显示</li>
+					</ul>
+				</li>
+				<li class="menu_list">
+					<div class="menu_list_name">
+                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" alt=""/>
+						设施查询
+                        <img class="list_array" src="{% static 'baotou/image/gis/array.png' %}" alt=""/>
+					</div>
+					<ul class="sub_menu_container">
+						<li class="sub_menu_list" onmousedown="spatial_search_show()">空间查询</li>
+						<li class="sub_menu_list" onmousedown="attribute_search_show()">属性查询</li>
+					</ul>
+				</li>
+				<li class="menu_list">
+					<div class="menu_list_name">
+                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" alt=""/>
+						设施统计
+                        <img class="list_array" src="{% static 'baotou/image/gis/array.png'%}" alt=""/>
+					</div>
+					<ul class="sub_menu_container">
+						<li class="sub_menu_list" onmousedown="Statistics_Click()">全部统计</li>
+						<li class="sub_menu_list" onmousedown="Statistics1_Click()">多边形统计</li>
+					</ul>
+				</li>
+                <li class="menu_list">
+					<div class="menu_list_name">
+                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" alt=""/>
+						设施台账
+                        <img class="list_array" src="{% static 'baotou/image/gis/array.png' %}" alt=""/>
+					</div>
+					<ul class="sub_menu_container">
+						<li class="sub_menu_list" onmousedown="voltage_transformer_standing_book_show()">变压器台账</li>
+						<li class="sub_menu_list" onmousedown="meter_standing_book_show()">计控箱台账</li>
+                        <li class="sub_menu_list" onmousedown="lamp_standing_book_show()">路灯台账</li>
+						<li class="sub_menu_list" onmousedown="cable_pit_standing_book_show()">电缆井台账</li>
+						<li class="sub_menu_list" onmousedown="cable_conductor_standing_book_show()">电缆线台账</li>
+					</ul>
+				</li>
+                <li class="menu_list">
+					<div class="menu_list_name">
+                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" alt=""/>
+						三遥联动
+                        <img class="list_array" src="{% static 'baotou/image/gis/array.png' %}" alt=""/>
+					</div>
+					<ul class="sub_menu_container">
+						<li class="sub_menu_list" onmousedown="mobile_control_show()">开关灯</li>
+					</ul>
+				</li>
+                <li class="menu_list">
+					<div class="menu_list_name">
+                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" alt=""/>
+						故障分析
+                        <img class="list_array" src="{% static 'baotou/image/gis/array.png' %}" alt=""/>
+					</div>
+					<ul class="sub_menu_container">
+						<li class="sub_menu_list" onmousedown="fault_terminal()">终端故障</li>
+						<li class="sub_menu_list" onmousedown="fault_lamp()">集中器故障</li>
+                        <li class="sub_menu_list" onmousedown="fault_factory(0)">厂家设备质量</li>
+					</ul>
+				</li>
+                    </ul>
+            </div>
+
+            <div id="right_bar">
+            </div>
+
+
+            <div id="layers_control" class="div_menu">
+                    <div class="div_title" id="layer_control_title">
+                            <span>图层控制</span>
+                            <image src="{% static 'baotou/image/gis/close.png'%}" onclick="layers_control_close()" 
+                                 alt="关闭" class="button_close"/>
+                    </div>
+                    <div id="Div_LayerConfig">
+                          <ul class="list-group" id="laycontrol_ul">
+                               <li class="list-group-item" style="color:#0071bc;">
+                                   <input class="layers_input" type="checkbox" checked="checked" onclick="layers_control_select_all()" />全选
+                               </li>
+                          </ul>
+                    </div>
+            </div>
+
+
+            <div id="spatial_search" class="div_menu">
+                    <div id="spatial_search_title" class="div_title">
+                            <span>空间查询</span>
+                            <image src="{% static 'baotou/image/gis/close.png'%}" onclick="spatial_search_close()" 
+                                 alt="关闭" class="button_close"/>
+                    </div>
+                    <div id="spatial_select_text">选择要查询的业务图层</div>
+                    <div id="spatial_select">
+                         <ul class="list-group" id="spatial_select_ul">
+                             <li class="list-group-item">
+                             <input type="checkbox" onclick="layers_select_all()" checked="checked" \
+                                     id="spatial_search_all"/>全选
+                             </li>
+                         </ul>
+                    </div>
+                    <div id="btn_layer_select">
+                            <button class="btn btn-default btn_layer_select_item" \
+                                    onclick="Button3_onclick()">画面选择</button>
+                            <button class="btn btn-default btn_layer_select_item"  \
+                                    onclick="Button4_onclick()">拉框选择</button>
+                    </div>
+               </div>
+
+
+               <div id="attribute_search" class="div_menu">
+                    <div class="div_title" id="attribute_search_title">
+                         <div id="attribute_search_title" class="div_title">
+                            <span>属性查询</span>
+                            <img src="{% static 'baotou/image/gis/close.png' %}" onclick="attribute_search_close()"  
+                            class="button_close" />
+                         </div>
+                    </div>
+                    <div id="attribute_search_layers">
+                            <span>查询图层:</span>
+                            <select class="form-control attribute_search_select"  onchange="Select_Layer_onchange()"
+                                    id="attribute_search_layers_select"></select>
+                    </div>
+                    <div id="attribute_search_field1" class="attribute_search_field">
+                            <span>字段1</span>
+                            <select class="form-control attribute_search_select" ></select>
+                            <select class="form-control attribute_search_select" ></select>
+                    </div>
+                    <div id="attribute_search_field2" class="attribute_search_field">
+                            <span>字段2</span>
+                            <input type="checkbox" class="attribute_search_checkbox"/>
+                            <select class="form-control attribute_search_select" ></select>
+                            <select class="form-control attribute_search_select" ></select>
+                    </div>
+                    <div id="attribute_search_field3" class="attribute_search_field">
+                            <span>字段3</span>
+                            <input type="checkbox" class="attribute_search_checkbox"/>
+                            <select class="form-control attribute_search_select" ></select>
+                            <select class="form-control attribute_search_select" ></select>
+                    </div>
+                    <div id="attribute_search_btn" class="attribute_search_field">
+                            <button class="btn btn-default" id="attribute_search_btn">点击定位</button>
+                    </div>
+            </div>
+
+
+            <div id="standing_book" class="div_menu">
+                <div class="div_title" id="standing_book_title">
+                    <span>计控箱台账</span>
+                    <img src="{% static 'baotou/image/gis/close.png' %}" onclick="standing_book_close()" class="button_close" />
+                </div>
+                <div id ="standing_book_btn">
+                        <button class="btn btn-primary" onclick="standing_book_team_show()">维护队</button>
+                        <button class="btn btn-primary" onclick="standing_book_road_show()">所属道路</button>
+                </div>
+                <div id="standing_book_chart"></div>
+                <div id="standing_book_tools">
+                        <div style="height:40px;float:left">
+                                <button class="btn btn-default">Excel导出</button>
+                        </div>
+                        <div id="standing_book_search">
+                                <span>全文搜索</span>
+                                <input></input>
+                        </div>
+                </div>
+                <div id="standing_book_table">
+                        <table class="table table-striped" id="table_standing">
+                                <thead> </thead> <tbody> </tbody>
+                        </table>
+                </div>
+            </div>
+
+
+
+            <div id="mobile_control" class="div_menu" >
+                    <div class="div_title" id="rtu_title">
+                            <span>终端列表</span>
+                            <span>集中器列表</span>
+                            <img src="{% static 'baotou/images/gis/close.png' %}" onclick="mobile_control_close()"
+                                 class="button_close" />
+                    </div>
+                    <div id="terminal_and_lamp">
+                            <table class="table table-striped" id="terminal_and_lamp_table" >
+                                    <thead><tr><th><input type="checkbox" onclick="terminal_and_lamp_selectall(this)">
+                                                    </th><th>终端ID</th>
+                                                    <th>终端名称</th><th>物理地址</th></thead>
+                                    <tbody></tbody>
+                            </table>
+                    </div>
+                    <div id="select_loop">
+                            <span class="select_loop_item">全部</span>
+                            <span class="select_loop_item">k1</span> <span class="select_loop_item">k2</span> 
+                            <span class="select_loop_item">k3</span> <span class="select_loop_item">k4</span>
+                            <span class="select_loop_item">k5</span> <span class="select_loop_item">k6</span>
+                            <span class="select_loop_item">k7</span> <span class="select_loop_item">k8</span>
+                    </div>
+                    <div id="select_loop_input">
+                            <span class="select_loop_item"><input type="checkbox" onclick="loop_selectall()"></span>
+                            <span class="select_loop_item"><input type="checkbox"></span>
+                            <span class="select_loop_item"><input type="checkbox"></span>
+                            <span class="select_loop_item"><input type="checkbox"></span>
+                            <span class="select_loop_item"><input type="checkbox"></span>
+                            <span class="select_loop_item"><input type="checkbox"></span>
+                            <span class="select_loop_item"><input type="checkbox"></span>
+                            <span class="select_loop_item"><input type="checkbox"></span>
+                            <span class="select_loop_item"><input type="checkbox"></span>
+                    </div>
+                    <div id="button_group">
+                            <button type="button" class="btn btn-primary" style="margin:10px 8px 16px 16px">开灯
+                            <button type="button" class="btn btn-default" style="margin:10px 8px 16px 16px">关灯
+                            <button type="button" class="btn btn-primary" style="margin:10px 8px 16px 16px">选测
+                            <button type="button" class="btn btn-default" onclick="loop_move()"
+                                    style="margin:10px 16px 16px 16px;float:right">清除
+                    </div>
+                    <div id="terminal_and_lamp_status">
+                            <span></span>
+                    </div>
+            </div>
+                               
+                            
+
+
+
+            
+    </div>
+
+</body>
+</html>
