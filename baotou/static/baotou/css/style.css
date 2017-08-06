@@ -94,7 +94,7 @@
 
 #Div_ToolBar
 {
-   background-color:#336ec4;
+    background-color:#336ec4;
     overflow: hidden;
     position: absolute;
     right: 0;
@@ -640,3 +640,9 @@ input[type="checkbox"].attribute_search_checkbox{
 }
 
 /* project.css */
+
+
+img.tool_bar_image{
+        width:38px;
+}
+

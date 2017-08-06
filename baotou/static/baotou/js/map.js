@@ -33,6 +33,8 @@ var pointSymbol1;
 var lineSymbol;
 var polygonSymbol;
 var click_handle;
+var nav_tool_bar;
+var map_tool_bar;
 
 
 $(document).ready(function(){
@@ -61,14 +63,47 @@ function map_load(){
         polygonSymbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([255, 0, 0]), 2), new dojo.Color([255, 255, 0, 0.25]));
      
         click_handle = dojo.connect(map,"onClick",mouse_click);
-
+        map_tool_bar = new esri.toolbars.Draw(map);
+        dojo.connect(map_tool_bar, "onDrawEnd",draw_end); //监听制图事件
         dojo.connect(service_layer, "onLoad",service_onload);
 
 }
 
+//监听制图事件：点、线、框、多边形绘制完毕
+function draw_end(geometry) {
+
+        if (map.graphics.graphics.length > 0) {
+            map.graphics.clear();
+        }
+        identify_layers();
+        identify_params.geometry = geometry;
+        identify_params.mapExtent = map.extent;
+        identify_task.execute(identify_params,task_complete);
+}
+
+function task_complete(results){
+
+        if(results.length < 0)
+                return;
+        alert(results.length);
+}
+
+function identify_layers() {
+
+        var layer_input = document.getElementsByClassName("spatial_search_item");
+        var layerIds = [];
+
+        for(var i = 0;i < layer_input.length;i++){
+                if(layer_input[i].checked)
+                    layerIds.push(layer_input[i].value);
+        }
+        identify_params.layerIds = layerIds;
+}
+
+
+
 function mouse_click(evt){
 
-        identify_task = new esri.tasks.IdentifyTask(service_url);
         identify_params.layerIds = service_layer.visibleLayers;
         identify_params.geometry = evt.mapPoint;
         identify_params.mapExtent =  map.extent;
@@ -101,6 +136,7 @@ function service_onload(){
         layers_control_create();
         spatial_search_create();
         attribute_search_create();
+        nav_bar_setup();
 //    setupNavBar(); //初始化工具条 
 }
 
@@ -164,5 +200,127 @@ function attribute_search_create(){
                 option.value = service_layer.layerInfos[i].id;
                 select.appendChild(option);
         }
+}
+
+function nav_bar_setup(){
+
+        nav_tool_bar = new esri.toolbars.Navigation(map);
+        dojo.query(".navItem img").onmouseover(function (evt) {
+            dojo.anim(evt.target.parentNode, {
+                backgroundColor: '#567AB0'
+            });
+        }).onmouseout(function (evt) {
+            dojo.anim(evt.target.parentNode, {
+                backgroundColor: '#336ec4'
+            });
+        }).onclick(function (evt) {
+            dojo.anim(evt.target.parentNode, {
+                backgroundColor: '#336ec4'
+            });
+            navEvent(evt.target.parentNode.id);
+        });
+        // 将漫游设置为默认操作
+        navEvent('deactivate');
+}
+
+var map_measure = false;
+var map_Hawkeye = true;
+function navEvent(id) {
+    switch (id) {
+        case 'pan':
+            map_tool_bar.deactivate();
+            map.enablePan();
+            map.setMapCursor("url(../../static/baotou/image/gis/cursor/default.cur),auto"); //设置鼠标漫游样式wy
+            nav_tool_bar.activate(esri.toolbars.Navigation.PAN);
+            break;
+        case 'zoomprev':
+            nav_tool_bar.zoomToPrevExtent();
+            break;
+        case 'zoomnext':
+            nav_tool_bar.zoomToNextExtent();
+            break;
+        case 'extent':
+            map.setMapCursor("default");
+            nav_tool_bar.deactivate();
+            map_tool_bar.deactivate();
+            var extent = new esri.geometry.Extent(119.782, 32.973, 120.877, 33.726);
+            map.setExtent(extent);
+            break;
+        case 'zoomin':
+            map.setMapCursor("url(../../static/baotou/image/gis/cursor/zoom-in.cur),auto"); //设置鼠标放大样式wy
+            nav_tool_bar.activate(esri.toolbars.Navigation.ZOOM_IN);
+            break;
+        case 'select':
+            map.setMapCursor("url(../../static/baotou/image/gis/cursor/select.cur),auto"); //wy
+            nav_tool_bar.deactivate();
+            map_tool_bar.activate(esri.toolbars.Draw.EXTENT);
+            break;
+        case 'clearselect':
+            map.setMapCursor("default"); //wy
+            map.infoWindow.hide();
+            nav_tool_bar.deactivate();
+            map_tool_bar.deactivate();
+            map.graphics.clear();
+            select_type = 0;
+            $("#Div_results_show").html("");
+            $("#Div_results").css("display", "none");
+            $("#select_attribute_detail_layer").html("<option></option>");
+            break;
+        //设置地图范围                                                                             
+        case 'map_extent':
+            updateExtentXML(map.extent.xmin, map.extent.ymin, map.extent.xmax, map.extent.ymax);
+            break;
+        case 'map_config':
+            window.open("XMLOperhtm.htm");
+            break;
+        case 'zoomout':
+            map.setMapCursor("url(../../static/baotou/image/gis/cursor/zoom-out.cur),auto"); //设置鼠标缩小样式wy
+            nav_tool_bar.activate(esri.toolbars.Navigation.ZOOM_OUT);
+            break;
+        case 'deactivate':
+            nav_tool_bar.deactivate();
+            map_tool_bar.deactivate();
+            map.setMapCursor("default"); //wy
+            break;
+        case 'map_Measurement':
+            nav_tool_bar.deactivate();
+            if (!map_measure) {
+                $("#MeasurementToolDiv").css("display", "block");
+                dojo.disconnect(mouseclickhandle);
+                map_measure = true;
+                map.setMapCursor("url(../../static/baotou/image/gis/cursor/select.cur),auto"); //wy
+                map_tool_bar.activate(esri.toolbars.Draw.POLYLINE); //激活maptoolbar的制图类型-多边形
+            }
+            else {
+                $("#MeasurementToolDiv").css("display", "none");
+                measurement.clearResult();
+                measurement.setTool("area", false);
+                measurement.setTool("distance", false);
+                measurement.setTool("location", false);
+                mouseclickhandle = dojo.connect(map, "onClick", mouseClick);
+                map_measure = false;
+                map_tool_bar.deactivate();
+                map.setMapCursor("default"); //wy
+            }
+            break;
+        case 'map_Hawkeye':
+            if (map_Hawkeye) {
+                $("#overviewMapDiv").css("display", "block");
+                map_Hawkeye = false;
+            }
+            else {
+                $("#overviewMapDiv").css("display", "none");
+                map_Hawkeye = true;
+            }
+            break;
+        case 'map_Legend':
+            if ($("#Div_LegendControl").is(":hidden")) {//如果隐藏时的处理方法
+                $("#Div_LegendControl").css("display", "block");
+            }
+            else {
+                $("#Div_LegendControl").css("display", "none");
+            }
+            break;
+    }
 }
 
