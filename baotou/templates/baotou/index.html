@@ -1,6 +1,5 @@
 <html>
 <head>
-
     {% load static %}
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>包头绿色照明地理信息系统</title>
@@ -265,9 +264,9 @@
                     </div>
                     <div id= "fault_tools">
                          <button  class="btn fault-btn btn-primary" style="padding:4px 25px;"
-                                 onclick="show_chart()">图线</button>
+                                 onclick="fault_chart_show()">图线</button>
                          <button class="btn btn-default fault-btn" style="padding:4px 25px;"
-                                 onclick="show_table()">表格</button>
+                                 onclick="fault_table_show()">表格</button>
                          <div id="fault_date_select">
                                <span id="text_datetime">查询日期</span> 
                                <input id = "fault_start" class="select_time" 
@@ -283,7 +282,24 @@
                     <div id = "detail_all"> </div>
             </div>
 
-                            
+
+            <div id="mobile_control_loop_list"  class="div_menu">
+                    <div class="div_title" id="loop_list_title">
+                            <span>活动列表</span>
+                            <img src="{% static 'baotou/image/gis/close.png' %}" onclick="loop_list_close()"
+                                 class="button_close" />
+                    </div>
+                    <div id="loop_list">
+                            <table class="table table-striped" id="loop_list_table" >
+                                    <thead><tr><th>回路名称</th><th>开关量状态</th>
+                                           <th>电压</th><th>电流</th><th>功率</th><th>功率因素</th></thead>
+                                    <tbody></tbody>
+                            </table>
+                    </div>
+            </div>
+            
+
+                                    
 
 
 

@@ -9,4 +9,8 @@ urlpatterns = [
         url(r'^fault_terminal_chart',views.fault_terminal_chart),
         url(r'^fault_lamp_chart',views.fault_lamp_chart),
         url(r'^fault_factory_chart',views.fault_factory_chart),
+        url(r'^fault_terminal_table',views.fault_terminal_table),
+        url(r'^fault_lamp_table',views.fault_lamp_table),
+        url(r'^fault_factory_table',views.fault_factory_table),
+        url(r'^terminal_loop_info',views.terminal_loop_info),
         ]

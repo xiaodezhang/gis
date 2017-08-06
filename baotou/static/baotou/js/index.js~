@@ -51,7 +51,9 @@ function fault_chart(data){
     var yaxis = new Array();
 
     for(var i = 0;i < data.length;i++){
-            xaxis[i] =  data[i].errname;
+            var keyname = Object.keys(data[0]);
+            var obname = data[i][keyname[0]];
+            xaxis[i] =  obname;
             yaxis[i] = data[i].number;
                    
     }
@@ -95,8 +97,8 @@ function fault_chart(data){
     var data_pie = [];
     var obname;
     for(i = 0;i < data.length;i++){
-            keyname = Object.keys(data[0]);
-            obname = data[i][keyname[0]];
+            var keyname = Object.keys(data[0]);
+            var obname = data[i][keyname[0]];
             data_pie.push({"value":data[i].number,"name":obname});
     }
     option_pie = {
@@ -176,25 +178,6 @@ function fault_table(data){
                         tbody_td.appendChild(document.createTextNode(data[i][item]));
                         tbody_tr.appendChild(tbody_td);
                 }
-                /*
-                if(fault_type_flag == "factory"){
-                        tbody_td_data.push(data[i].facid); tbody_td_data.push(data[i].facname);
-                        tbody_td_data.push(data[i].ledbool); tbody_td_data.push(data[i].installtime);
-                        tbody_td_data.push(data[i].changetime); tbody_td_data.push(data[i].lifetime);
-                }else{
-                        tbody_td_data.push(data[i].errid);  tbody_td_data.push(data[i].errname);  
-                        tbody_td_data.push(data[i].tmlid);  tbody_td_data.push(data[i].tmlname);  
-                        tbody_td_data.push(data[i].dtremove);  tbody_td_data.push(data[i].phyid);  
-                        tbody_td_data.push(data[i].errcount);  
-                }
-
-                for(var j = 0;j < tbody_td_data.length;j++){
-                        tbody_td[j] = document.createElement("td");
-                        tbody_td[j].value = tbody_td_data[j];
-                        tbody_td[j].appendChild(document.createTextNode(tbody_td_data[j]));
-                        tbody_tr.appendChild(tbody_td[j]);
-                }
-                */
                 tbody.appendChild(tbody_tr);
         }
 }
@@ -305,37 +288,55 @@ function get_fault_data(fault_data_type,type){
 }
 
 function fault_terminal(){
-        fault_type_flag = "terminal";
         if(fault_show_type == "chart")
             show_chart("fault_terminal_chart");
         else
             show_table("fault_terminal_table");
-        show_fault();
+        show_fault("terminal");
+        fault_type_flag = "terminal";
 }
 
 function fault_lamp(){
 
-        fault_type_flag = "lamp";
         if(fault_show_type == "chart")
             show_chart("fault_lamp_chart");
         else
-            show_table();
-        show_fault();
+            show_table("fault_lamp_table");
+        show_fault("lamp");
+        fault_type_flag = "lamp";
 }
 
 function fault_factory(){
 
-        fault_type_flag = "factory";
         if(fault_show_type == "chart")
             show_chart("fault_factory_chart");
         else
-//            show_table("fault");
-        show_fault();
+            show_table("fault_factory_table");
+        show_fault("factory");
+        fault_type_flag = "factory";
 }
 
 function close_fault(){
     $("#fault_statistics").css("display","none");
 }
+
+
+function fault_chart_show(){
+
+        var fault_data_type = {"terminal" : "fault_terminal_chart",
+                                "lamp"    : "fault_lamp_chart",
+                                "factory" : "fault_factory_chart"};
+        show_chart(fault_data_type[fault_type_flag]);
+}
+
+function fault_table_show(){
+
+         var fault_data_type = {"terminal" : "fault_terminal_table",
+                                "lamp"    : "fault_lamp_table",
+                                "factory" : "fault_factory_table"};
+        show_table(fault_data_type[fault_type_flag]);
+}
+
 
 function show_chart(fault_data_type){
         $("#detail_all").css("overflow","visible");
@@ -346,11 +347,11 @@ function show_chart(fault_data_type){
         fault_show_type = "chart";
         get_fault_data(fault_data_type,"chart");
 }
-function show_table(){
+function show_table(fault_data_type){
         $("#detail_all").html("");
         $("#detail_all").css("overflow","auto");
         fault_show_type = "table";
-        get_fault_data("table",fault_type_flag);
+        get_fault_data(fault_data_type,"table");
 }
 
 function show_fault(fault_type){
@@ -436,13 +437,13 @@ function terminal_table_create(data){
 function show_loop_info(td){
 
     $.ajax({
-        type: "POST",
-        url: "WebService1.asmx/terminal_loop_data",
+        type: "GET",
+        url: "terminal_loop_info",
         dataType: "json",
-        data: "{tmlid:'" + td.value+ "'}",
+        data: {"tmlid":td.value},
         contentType: "application/json; charset=utf-8",
         success: function (json) {
-                var data = eval(json.d);
+                var data = eval(json);
                 terminal_loop_table_create(data);
         },
         error:function(){

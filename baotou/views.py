@@ -66,9 +66,41 @@ def fault_lamp_chart(request):
 def fault_factory_chart(request):
 
     cursor = sql_server_connect(True)
-    cursor.execute("SELECT DISTINCT errname,COUNT(errname) as number FROM DataErr GROUP BY errname") 
+    cursor.execute("SELECT DISTINCT facname,COUNT(facname) as number FROM DataFactory GROUP BY facname") 
     data_json = json.dumps(cursor.fetchall())
     return JsonResponse(data_json,safe=False)
+
+
+def fault_terminal_table(request):
+
+    cursor = sql_server_connect(True)
+    cursor.execute("SELECT errid,errname,tmlid,tmlname,dtremove,phyid,errcount FROM DataErr") 
+    data_json = json.dumps(cursor.fetchall())
+    return JsonResponse(data_json,safe=False)
+
+def fault_lamp_table(request):
+
+    cursor = sql_server_connect(True)
+    cursor.execute("SELECT errid,errname,tmlid,tmlname,dtremove,phyid,errcount FROM DataErr") 
+    data_json = json.dumps(cursor.fetchall())
+    return JsonResponse(data_json,safe=False)
+
+def fault_factory_table(request):
+
+    cursor = sql_server_connect(True)
+    cursor.execute("SELECT * FROM DataFactory") 
+    data_json = json.dumps(cursor.fetchall())
+    return JsonResponse(data_json,safe=False)
+
+def terminal_loop_info(request):
+
+    cursor = sql_server_connect(True)
+    tmlid = request.GET.get('tmlid') 
+    print tmlid
+    cursor.execute("SELECT loopname,switch_in_st,voltage,current_rtu,power,factor FROM sde.dbo.DataRtu where tmlid=%s" % tmlid) 
+    data_json = json.dumps(cursor.fetchall())
+    return JsonResponse(data_json,safe=False)
+
 
 
 
