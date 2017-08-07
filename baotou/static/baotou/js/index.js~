@@ -443,6 +443,7 @@ function show_loop_info(td){
         data: {"tmlid":td.value},
         contentType: "application/json; charset=utf-8",
         success: function (json) {
+
                 var data = eval(json);
                 terminal_loop_table_create(data);
         },
@@ -510,6 +511,10 @@ function loop_move(){
 }
 
 function spatial_search_show(){
+        if($("#spatial_search").css("display") != "none"){
+                $("#spatial_search").css("display","none");
+                return
+        }
         $(".div_menu").css("display","none")
         $("#spatial_search").css("display","block");
 }
@@ -743,6 +748,10 @@ function attribute_search_close(){
 
 function attribute_search_show(){
 
+        if($("#attribute_search").css("display") != "none"){
+            $("#attribute_search").css("display","none");
+                return;
+        }
         $(".div_menu").css("display","none");
         $("#attribute_search").css("display","block");
 }
@@ -766,3 +775,99 @@ function layers_control_select_all() {
     service_layer.setVisibility(layers_flag);
 }
 
+function facility_statistics_close(){
+
+        $("#facility_statistics").css("display","none");
+}
+
+function facility_statistics_show(){
+
+        if($("#facility_statistics").css("display") != "none"){
+                $("#facility_statistics").css("display","none");
+                return;
+        }
+        var query = new esri.tasks.Query();
+        var service_feature_set = [];
+
+        select_clear();
+        identify_params.layerIds = service_layer.visibleLayers;
+
+        for(var i = 0;i < service_layer.layerInfos.length;i++){
+                var query_task = new esri.tasks.QueryTask(service_url+ "/" + service_layer.layerInfos[i].id);
+
+                query.returnGeometry = true;
+                query.outFields = ["*"];
+                query.where = "1=1";
+                query_task.execute(query,function(feature_set){
+                    service_feature_set.push(feature_set);
+                    if(service_feature_set.length == service_layer.layerInfos.length)
+                        facility_statistics_table_create(service_feature_set);
+                });
+        }
+}
+
+function facility_statistics_table_create(feature_set){
+
+        var table = document.getElementById("table_facility_statistics");
+        var tbody = table.getElementsByTagName("tbody")[0];
+        var name = ["变压器","计控箱","电缆线","路灯"]
+
+        tbody.innerHTML = "";
+        for(var i = 0;i < feature_set.length;i++){
+                var tbody_tr = document.createElement("tr");
+                var tbody_td_name = document.createElement("td");
+                var tbody_td_num = document.createElement("td");
+
+//                tbody_td_name.appendChild(document.createTextNode(feature_set[i].fieldAliases.name))
+                tbody_td_name.appendChild(document.createTextNode(name[i]))
+                tbody_td_num.appendChild(document.createTextNode(feature_set[i].features.length));
+                tbody_tr.appendChild(tbody_td_name);
+                tbody_tr.appendChild(tbody_td_num);
+                tbody.appendChild(tbody_tr);
+        }
+        $(".div_menu").css("display","none");
+        $("#facility_statistics").css("display","block");
+}
+
+
+function facility_statistics_poly_show(){
+
+        statistics_flag = true;
+        select_clear();
+        identify_params.layerIds = service_layer.visibleLayers;
+        $(".div_menu").css("display","none");
+        map.setMapCursor("url(../../static/baotou/image/gis/cursor/select.cur),auto"); //wy
+        nav_tool_bar.deactivate();
+        map_tool_bar.activate(esri.toolbars.Draw.POLYGON); //激活maptoolbar的制图类型-多边形
+}       
+
+function layer_select_poly(){
+
+        statistics_flag = false;
+        map.setMapCursor("url(../../static/baotou/image/gis/cursor/select.cur),auto"); //wy
+        nav_tool_bar.deactivate();
+        map_tool_bar.activate(esri.toolbars.Draw.POLYGON); //激活maptoolbar的制图类型-多边形
+
+}
+
+function attribute_search_layer(){
+
+        var select = document.getElementById("attribute_search_layers_select");
+        var layer_id = select.options[select.selectedIndex].value;
+
+        var requestHandle = esri.request({
+             "url":service_url+"/"+layer_id,
+             "content": {
+                 "f": "json"
+             },
+            "callbackParamName": "callback"
+         });
+
+        requestHandle.then(rq_succeeded,rq_failed);
+}       
+
+function rq_succeeded(response){
+}
+
+function rq_failed(response){
+}

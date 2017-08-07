@@ -646,3 +646,21 @@ img.tool_bar_image{
         width:38px;
 }
 
+#facility_statistics{
+        width:450px;
+        display:none;
+}
+
+#facility_statistics_tools{
+        height:58px;
+        padding:12px;
+}
+
+#facility_statistics_btn{
+        float:right;
+}
+
+#facility_statistics_input{
+        display:inline;
+        width:70%;
+}

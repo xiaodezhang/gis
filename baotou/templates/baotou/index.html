@@ -60,8 +60,8 @@
                         <img class="list_array" src="{% static 'baotou/image/gis/array.png'%}" alt=""/>
 					</div>
 					<ul class="sub_menu_container">
-						<li class="sub_menu_list" onmousedown="Statistics_Click()">全部统计</li>
-						<li class="sub_menu_list" onmousedown="Statistics1_Click()">多边形统计</li>
+						<li class="sub_menu_list" onmousedown="facility_statistics_show()">全部统计</li>
+						<li class="sub_menu_list" onmousedown="facility_statistics_poly_show()">多边形统计</li>
 					</ul>
 				</li>
                 <li class="menu_list">
@@ -142,9 +142,9 @@
             </div>
             <div id="btn_layer_select">
                     <button class="btn btn-default btn_layer_select_item" \
-                            onclick="Button3_onclick()">画面选择</button>
+                            onclick="layer_select_poly()">画面选择</button>
                     <button class="btn btn-default btn_layer_select_item"  \
-                            onclick="Button4_onclick()">拉框选择</button>
+                            onclick="layer_select()">拉框选择</button>
             </div>
        </div>
 
@@ -159,7 +159,7 @@
             </div>
             <div id="attribute_search_layers">
                     <span>查询图层:</span>
-                    <select class="form-control attribute_search_select"  onchange="Select_Layer_onchange()"
+                    <select class="form-control attribute_search_select"  onchange="attribute_search_layer()"
                             id="attribute_search_layers_select"></select>
             </div>
             <div id="attribute_search_field1" class="attribute_search_field">
@@ -299,6 +299,45 @@
                     </table>
             </div>
     </div>
+
+   <div id="search_result" class="div_menu">
+       <div id="search_title" class="div_title">
+               <span>查询结果</span>
+               <img src="{% static 'baotou/image/gis/close.png'%}" onclick="search_result_close()"  
+               class="button_close" />
+       </div>
+       <div id="layer_info_show"> 
+               <select class="form-control" id="search_result_select">
+               </select>
+               <button class="btn btn-default" style="float:right" onclick="detail_info_show()" />详细信息
+       </div>
+       <div id="search_result_table">
+               <table class="table table-striped" id="table_result">
+                     <thead><th>设施编号</th><th>编号</th><th>设施操作</th> 
+                     </thead> <tbody></tbody>
+               </table>
+       </div>
+    </div>
+
+
+    <div id="facility_statistics" class="div_menu">
+           <div id="facility_statistics_title" class="div_title">
+               <span>设施统计结果</span>
+               <img src="{% static 'baotou/image/gis/close.png'%}" onclick="facility_statistics_close()"  
+               class="button_close" />
+           </div>
+           <div id="facility_statistics_tools">
+                   <input type="text" class="form-control" id="facility_statistics_input"></input>
+                   <button class="btn btn-default" id="facility_statistics_btn">全文搜索</button>
+           </div>
+           <div id="facility_statistics_table">
+                   <table class="table table-striped" id="table_facility_statistics">
+                           <thead><tr> <th>设施名称</th><th>名称</th></tr></thead>
+                           <tbody></tbody>
+                   </table>
+           </div>
+    </div>
+
     
                                     
     <div id="Div_ToolBar">

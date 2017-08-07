@@ -35,6 +35,7 @@ var polygonSymbol;
 var click_handle;
 var nav_tool_bar;
 var map_tool_bar;
+var statistics_flag;
 
 
 $(document).ready(function(){
@@ -66,6 +67,7 @@ function map_load(){
         map_tool_bar = new esri.toolbars.Draw(map);
         dojo.connect(map_tool_bar, "onDrawEnd",draw_end); //监听制图事件
         dojo.connect(service_layer, "onLoad",service_onload);
+        statistics_flag = false;
 
 }
 
@@ -83,15 +85,118 @@ function draw_end(geometry) {
 
 function task_complete(results){
 
+        var feature;
+
         if(results.length < 0)
                 return;
-        alert(results.length);
+        for(var i = 0;i < results.length;i++){
+                var symbol = {"point":pointSymbol,"polyline":lineSymbol,"polygon":polygonSymbol};
+
+                feature = results[i].feature;
+                feature.setSymbol(symbol[feature.geometry.type]);
+        }
+        if(statistics_flag){
+                facility_statistics_poly_table_create(results);
+        }else{
+            add_feature_to_list(results);
+        }
 }
 
+function facility_statistics_poly_table_create(results){
+
+        var layer_name = new Array(service_layer.layerInfos.length);
+        var layer_num = new Array(service_layer.layerInfos.length);
+
+        for(var i = 0;i < service_layer.layerInfos.length;i++){
+                layer_name[i] = service_layer.layerInfos[i].name;
+                layer_num[i] = 0;
+        }
+
+        for(i = 0;i < results.length;i++){
+                if(layer_name.indexOf(results[i].layerName) >= 0){
+                        layer_num[results[i].layerId] += 1;
+                        layer_name[results[i].layerId] = results[i].layerName;
+                }
+        }
+
+        var table = document.getElementById("table_facility_statistics");
+        var tbody = table.getElementsByTagName("tbody")[0];
+
+        tbody.innerHTML = "";
+        for(i = 0;i < layer_name.length;i++){
+                var tbody_tr = document.createElement("tr");
+                var tbody_td_name = document.createElement("td");
+                var tbody_td_num = document.createElement("td");
+
+                tbody_td_name.appendChild(document.createTextNode(layer_name[i]))
+                tbody_td_num.appendChild(document.createTextNode(layer_num[i]));
+                tbody_tr.appendChild(tbody_td_name);
+                tbody_tr.appendChild(tbody_td_num);
+                tbody.appendChild(tbody_tr);
+        }
+        $(".div_menu").css("display","none");
+        $("#facility_statistics").css("display","block");
+}
+
+function add_feature_to_list(results){
+
+        var select = document.getElementById("search_result_select");
+        var table = document.getElementById("table_result");
+        var tbody = table.getElementsByTagName("tbody")[0];
+        
+        var layers_name = new Array();
+        var layers_id= new Array();
+
+        if(results.length <= 0){
+                return;
+        }
+        select.innerHTML = "";
+        layers_name.push(results[0].layerName);
+        layers_id.push(results[0].layerId);
+        for(var i = 0;i < results.length;i++){
+                var tbody_tr = document.createElement("tr");
+                var tbody_td_name = document.createElement("td");
+                var tbody_td_id = document.createElement("td");
+                var tbody_td_operation = document.createElement("td");
+                var img_op_locate = document.createElement("img");
+                var img_op_info = document.createElement("img");
+                
+                img_op_locate.src = "../../static/baotou/image/gis/pictures/locate.png";
+                img_op_locate.id = "op_locate_img";
+                img_op_info.src = "../../static/baotou/image/gis/pictures/AttributesWindow.png";
+                tbody_td_operation.appendChild(img_op_locate);
+                tbody_td_operation.appendChild(img_op_info);
+                tbody_td_operation.appendChild(img_op_info);
+                tbody_td_name.appendChild(document.createTextNode(results[i].layerName));
+                tbody_td_id.appendChild(document.createTextNode(results[i].layerId));
+                tbody_tr.appendChild(tbody_td_name);
+                tbody_tr.appendChild(tbody_td_id);
+                tbody_tr.appendChild(tbody_td_operation);
+                tbody.appendChild(tbody_tr);
+                if(layers_name.indexOf(results[i].layerName) < 0){
+                        layers_name.push(results[i].layerName);
+                        layers_id.push(results[i].layerId);
+                }
+                
+        }
+        for(i = 0;i < layers_name.length;i++){
+                var option = document.createElement("option");
+                var option_text = document.createTextNode(layers_name[i]);
+                option.appendChild(option_text);
+                select.appendChild(option);
+        }
+
+        $(".div_menu").css("display","none");
+        $("#search_result").css("display","block");
+}
 function identify_layers() {
 
         var layer_input = document.getElementsByClassName("spatial_search_item");
         var layerIds = [];
+        if(statistics_flag){
+                identify_params.layerIds = service_layer.visibleLayers;
+                return;
+        }
 
         for(var i = 0;i < layer_input.length;i++){
                 if(layer_input[i].checked)
@@ -128,8 +233,6 @@ function attribute_show(results){
         console.log("attribute_show");
 
 }
-
-
 
 function service_onload(){
 
@@ -251,20 +354,10 @@ function navEvent(id) {
             nav_tool_bar.activate(esri.toolbars.Navigation.ZOOM_IN);
             break;
         case 'select':
-            map.setMapCursor("url(../../static/baotou/image/gis/cursor/select.cur),auto"); //wy
-            nav_tool_bar.deactivate();
-            map_tool_bar.activate(esri.toolbars.Draw.EXTENT);
+            layer_select();
             break;
         case 'clearselect':
-            map.setMapCursor("default"); //wy
-            map.infoWindow.hide();
-            nav_tool_bar.deactivate();
-            map_tool_bar.deactivate();
-            map.graphics.clear();
-            select_type = 0;
-            $("#Div_results_show").html("");
-            $("#Div_results").css("display", "none");
-            $("#select_attribute_detail_layer").html("<option></option>");
+            select_clear();
             break;
         //设置地图范围                                                                             
         case 'map_extent':
@@ -286,7 +379,7 @@ function navEvent(id) {
             nav_tool_bar.deactivate();
             if (!map_measure) {
                 $("#MeasurementToolDiv").css("display", "block");
-                dojo.disconnect(mouseclickhandle);
+                dojo.disconnect(click_handle);
                 map_measure = true;
                 map.setMapCursor("url(../../static/baotou/image/gis/cursor/select.cur),auto"); //wy
                 map_tool_bar.activate(esri.toolbars.Draw.POLYLINE); //激活maptoolbar的制图类型-多边形
@@ -322,5 +415,22 @@ function navEvent(id) {
             }
             break;
     }
+}
+
+function select_clear(){
+
+        map.setMapCursor("default"); //wy
+        map.infoWindow.hide();
+        nav_tool_bar.deactivate();
+        map_tool_bar.deactivate();
+        map.graphics.clear();
+}
+
+function layer_select(){
+
+        map.setMapCursor("url(../../static/baotou/image/gis/cursor/select.cur),auto"); //wy
+        statistics_flag = false;
+        nav_tool_bar.deactivate();
+        map_tool_bar.activate(esri.toolbars.Draw.EXTENT);
 }
 
