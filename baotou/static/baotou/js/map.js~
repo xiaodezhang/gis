@@ -36,6 +36,7 @@ var click_handle;
 var nav_tool_bar;
 var map_tool_bar;
 var statistics_flag;
+var service_feature;
 
 
 $(document).ready(function(){
@@ -240,7 +241,23 @@ function service_onload(){
         spatial_search_create();
         attribute_search_create();
         nav_bar_setup();
-//    setupNavBar(); //初始化工具条 
+        query_task_operation();
+}
+
+function query_task_operation(){
+
+        var query = new esri.tasks.Query();
+
+        for(var i = 0;i < service_layer.layerInfos.length;i++){
+                var query_task = new esri.tasks.QueryTask(service_url+ "/" + service_layer.layerInfos[i].id);
+
+                query.returnGeometry = true;
+                query.outFields = ["*"];
+                query.where = "1=1";
+                query_task.execute(query,function(feature_set){
+                    service_feature.push(feature_set);
+                });
+        }
 }
 
 function layers_control_create(){
@@ -419,11 +436,11 @@ function navEvent(id) {
 
 function select_clear(){
 
-            map.setMapCursor("default"); //wy
-            map.infoWindow.hide();
-            nav_tool_bar.deactivate();
-            map_tool_bar.deactivate();
-            map.graphics.clear();
+        map.setMapCursor("default"); //wy
+        map.infoWindow.hide();
+        nav_tool_bar.deactivate();
+        map_tool_bar.deactivate();
+        map.graphics.clear();
 }
 
 function layer_select(){

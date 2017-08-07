@@ -786,49 +786,32 @@ function facility_statistics_show(){
                 $("#facility_statistics").css("display","none");
                 return;
         }
-        var query = new esri.tasks.Query();
-        var service_feature_set = [];
-
-        select_clear();
-        identify_params.layerIds = service_layer.visibleLayers;
-
-        for(var i = 0;i < service_layer.layerInfos.length;i++){
-                var query_task = new esri.tasks.QueryTask(service_url+ "/" + service_layer.layerInfos[i].id);
-
-                query.returnGeometry = true;
-                query.outFields = ["*"];
-                query.where = "1=1";
-                query_task.execute(query,function(feature_set){
-                    service_feature_set.push(feature_set);
-                    if(service_feature_set.length == service_layer.layerInfos.length)
-                        facility_statistics_table_create(service_feature_set);
-                });
+        if(service_feature.length != service_layer.layerInfos.length){
+                console.log("service feature number error");
+                return;
         }
-}
-
-function facility_statistics_table_create(feature_set){
 
         var table = document.getElementById("table_facility_statistics");
         var tbody = table.getElementsByTagName("tbody")[0];
         var name = ["变压器","计控箱","电缆线","路灯"]
 
         tbody.innerHTML = "";
-        for(var i = 0;i < feature_set.length;i++){
+        for(var i = 0;i < service_feature.length;i++){
                 var tbody_tr = document.createElement("tr");
                 var tbody_td_name = document.createElement("td");
                 var tbody_td_num = document.createElement("td");
 
 //                tbody_td_name.appendChild(document.createTextNode(feature_set[i].fieldAliases.name))
                 tbody_td_name.appendChild(document.createTextNode(name[i]))
-                tbody_td_num.appendChild(document.createTextNode(feature_set[i].features.length));
+                tbody_td_num.appendChild(document.createTextNode(service_feature[i].features.length));
                 tbody_tr.appendChild(tbody_td_name);
                 tbody_tr.appendChild(tbody_td_num);
                 tbody.appendChild(tbody_tr);
         }
         $(".div_menu").css("display","none");
         $("#facility_statistics").css("display","block");
-}
 
+}
 
 function facility_statistics_poly_show(){
 
@@ -855,6 +838,7 @@ function attribute_search_layer(){
         var select = document.getElementById("attribute_search_layers_select");
         var layer_id = select.options[select.selectedIndex].value;
 
+/*
         var requestHandle = esri.request({
              "url":service_url+"/"+layer_id,
              "content": {
@@ -864,9 +848,22 @@ function attribute_search_layer(){
          });
 
         requestHandle.then(rq_succeeded,rq_failed);
+*/        
+
+
+        var query_task = new esri.tasks.QueryTask(service_url+ "/" + layer_id);
+        var query = new esri.tasks.Query();
+
+//        query.returnGeometry = true;
+        query.outFields = ["*"];
+        query.where = "1=1";
+        query_task.execute(query,function(feature_set){
+        });
+
 }       
 
 function rq_succeeded(response){
+
 }
 
 function rq_failed(response){
