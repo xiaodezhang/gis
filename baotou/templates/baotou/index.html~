@@ -159,28 +159,34 @@
             </div>
             <div id="attribute_search_layers">
                     <span>查询图层:</span>
-                    <select class="form-control attribute_search_select"  onchange="Select_Layer_onchange()"
+                    <select class="form-control attribute_search_select"  onchange="attribute_layer_onchange()"
                             id="attribute_search_layers_select"></select>
             </div>
-            <div id="attribute_search_field1" class="attribute_search_field">
+            <div id="attribute_search_field1" class="attribute_search_field" style="disabled:disabled">
                     <span>字段1</span>
-                    <select class="form-control attribute_search_select" ></select>
-                    <select class="form-control attribute_search_select" ></select>
+                    <select class="form-control attribute_search_select" id="attribute_select1"
+                            onchange="attribute_aliase_onchange()"></select>
+                    <select class="form-control attribute_search_select" id="attribute_value_select1"></select>
             </div>
             <div id="attribute_search_field2" class="attribute_search_field">
                     <span>字段2</span>
-                    <input type="checkbox" class="attribute_search_checkbox"/>
-                    <select class="form-control attribute_search_select" ></select>
-                    <select class="form-control attribute_search_select" ></select>
+                    <input type="checkbox" class="attribute_search_checkbox" id="select_check2"
+                            onchange="attribute_check2_onchange()"/>
+                    <select class="form-control attribute_search_select" id="attribute_select2"
+                            onchange="attribute2_aliase_onchange()"></select>
+                    <select class="form-control attribute_search_select" id="attribute_value_select2"></select>
             </div>
             <div id="attribute_search_field3" class="attribute_search_field">
                     <span>字段3</span>
-                    <input type="checkbox" class="attribute_search_checkbox"/>
-                    <select class="form-control attribute_search_select" ></select>
-                    <select class="form-control attribute_search_select" ></select>
+                    <input type="checkbox" class="attribute_search_checkbox" id="select_check3"
+                            onchange="attribute_check3_onchange()"/>
+                    <select class="form-control attribute_search_select" id="attribute_select3"
+                            onchange="attribute3_aliase_onchange()"></select>
+                    <select class="form-control attribute_search_select" id="attribute_value_select3"></select>
             </div>
             <div id="attribute_search_btn" class="attribute_search_field">
-                    <button class="btn btn-default" id="attribute_search_btn">点击定位</button>
+                    <button class="btn btn-default" id="attribute_search_btn"
+                            onclick="locate()">点击定位</button>
             </div>
     </div>
 

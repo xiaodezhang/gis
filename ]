@@ -883,7 +883,12 @@ function attribute_select_fill(select_aliase,select_value){
                 return;
         }
 
-        layer_feature_id = attribute_search_layer_id(layer_text);
+        for(var i = 0;i < service_feature.length;i++){
+                if(service_feature[i].features[0].attributes.name == layer_text){
+                        layer_feature_id = i;
+                        break;
+                }
+        }
 
         var attribute_select = document.getElementById(select_aliase);
         var attribute_value_select = document.getElementById(select_value);
@@ -968,22 +973,10 @@ function attribute_search_layer_id(layer_text){
                         return i;
                 }
         }
+
+
 }
 
 function locate(){
-
-        var select = document.getElementById("attribute_search_layers_select");
-        var layer_text = select.options[select.selectedIndex].text;
-        var layer_feature_id = attribute_search_layer_id();
-        var locate_query_task = new esri.tasks.QueryTask(service_url+"/"+layer_feature_id);
-        var query = new esri.tasks.Query();
-        var where;
-
-        for(var i = 0;i < 3;i++){
-
-        }
-
-        query.returnGeometry = true;
-        query.outFields = ["*"];
 
 }

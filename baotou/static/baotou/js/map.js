@@ -239,7 +239,6 @@ function service_onload(){
 
         layers_control_create();
         spatial_search_create();
-        attribute_search_create();
         nav_bar_setup();
         query_task_operation();
 }
@@ -255,7 +254,10 @@ function query_task_operation(){
                 query.outFields = ["*"];
                 query.where = "1=1";
                 query_task.execute(query,function(feature_set){
-                    service_feature.push(feature_set);
+                        service_feature.push(feature_set);
+                        if(service_feature.length == service_layer.layerInfos.length){
+                                attribute_search_create();
+                        }
                 });
         }
 }
@@ -320,6 +322,7 @@ function attribute_search_create(){
                 option.value = service_layer.layerInfos[i].id;
                 select.appendChild(option);
         }
+        attribute_layer_onchange();
 }
 
 function nav_bar_setup(){

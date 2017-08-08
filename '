@@ -831,7 +831,6 @@ function attribute_search_show(){
                 return;
         }
         attribute_check2_onchange();
-        attribute_check3_onchange();
         $(".div_menu").css("display","none");
         $("#attribute_search").css("display","block");
 }
@@ -845,24 +844,21 @@ function check_onchange(check_s,select_s,select2_s){
         if(check.checked){
                 select.disabled = false;
                 select2.disabled = false;
-                select.style.background = "white";
-                select2.style.background = "white";
         }else{
                 select.disabled = true;
                 select2.disabled = true;
-                select.style.background = "grey";
-                select2.style.background = "grey";
         }
+
+
 }
 
 function attribute_check2_onchange(){
 
-        check_onchange("select_check2","attribute_select2","attribute_value_select2");
+        check_onchange("select_check2","attribute_select2","attribue_value_select2");
 }
+function attribute_check2_onchange(){
 
-function attribute_check3_onchange(){
-
-        check_onchange("select_check3","attribute_select3","attribute_value_select3");
+        check_onchange("select_check2","attribute_select2","attribue_value_select2");
 }
 
 function attribute_layer_onchange(){
@@ -883,7 +879,12 @@ function attribute_select_fill(select_aliase,select_value){
                 return;
         }
 
-        layer_feature_id = attribute_search_layer_id(layer_text);
+        for(var i = 0;i < service_feature.length;i++){
+                if(service_feature[i].features[0].attributes.name == layer_text){
+                        layer_feature_id = i;
+                        break;
+                }
+        }
 
         var attribute_select = document.getElementById(select_aliase);
         var attribute_value_select = document.getElementById(select_value);
@@ -942,8 +943,14 @@ function attribute_search_attribute(attribute_text,attribute_value){
         var attribute_value_select = document.getElementById(attribute_value);
         var layer_feature_id;
         
-        layer_feature_id = attribute_search_layer_id(layer_text);
         attribute_value_select.innerHTML = "";
+        for(var i = 0;i < service_feature.length;i++){
+                if(service_feature[i].features[0].attributes.name == layer_text){
+                        layer_feature_id = i;
+                        break;
+                }
+        }
+
         var features = service_feature[layer_feature_id].features;
         var aliases = service_feature[layer_feature_id].fieldAliases;
 
@@ -961,29 +968,7 @@ function attribute_search_attribute(attribute_text,attribute_value){
         }
 }
 
-function attribute_search_layer_id(layer_text){
-
-        for(var i = 0;i < service_feature.length;i++){
-                if(service_feature[i].features[0].attributes.name == layer_text){
-                        return i;
-                }
-        }
-}
 
 function locate(){
-
-        var select = document.getElementById("attribute_search_layers_select");
-        var layer_text = select.options[select.selectedIndex].text;
-        var layer_feature_id = attribute_search_layer_id();
-        var locate_query_task = new esri.tasks.QueryTask(service_url+"/"+layer_feature_id);
-        var query = new esri.tasks.Query();
-        var where;
-
-        for(var i = 0;i < 3;i++){
-
-        }
-
-        query.returnGeometry = true;
-        query.outFields = ["*"];
 
 }

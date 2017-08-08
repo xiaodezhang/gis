@@ -746,15 +746,6 @@ function attribute_search_close(){
         $("#attribute_search").css("display","none");
 }
 
-function attribute_search_show(){
-
-        if($("#attribute_search").css("display") != "none"){
-            $("#attribute_search").css("display","none");
-                return;
-        }
-        $(".div_menu").css("display","none");
-        $("#attribute_search").css("display","block");
-}
 
 function detail_info_show(){
 
@@ -833,38 +824,165 @@ function layer_select_poly(){
 
 }
 
-function attribute_search_layer(){
+function attribute_search_show(){
 
-        var select = document.getElementById("attribute_search_layers_select");
-        var layer_id = select.options[select.selectedIndex].value;
-
-/*
-        var requestHandle = esri.request({
-             "url":service_url+"/"+layer_id,
-             "content": {
-                 "f": "json"
-             },
-            "callbackParamName": "callback"
-         });
-
-        requestHandle.then(rq_succeeded,rq_failed);
-*/        
-
-
-        var query_task = new esri.tasks.QueryTask(service_url+ "/" + layer_id);
-        var query = new esri.tasks.Query();
-
-//        query.returnGeometry = true;
-        query.outFields = ["*"];
-        query.where = "1=1";
-        query_task.execute(query,function(feature_set){
-        });
-
-}       
-
-function rq_succeeded(response){
-
+        if($("#attribute_search").css("display") != "none"){
+            $("#attribute_search").css("display","none");
+                return;
+        }
+        attribute_check2_onchange();
+        attribute_check3_onchange();
+        $(".div_menu").css("display","none");
+        $("#attribute_search").css("display","block");
 }
 
-function rq_failed(response){
+function check_onchange(check_s,select_s,select2_s){
+
+        var check = document.getElementById(check_s);
+        var select = document.getElementById(select_s);
+        var select2 = document.getElementById(select2_s);
+
+        if(check.checked){
+                select.disabled = false;
+                select2.disabled = false;
+                select.style.background = "white";
+                select2.style.background = "white";
+        }else{
+                select.disabled = true;
+                select2.disabled = true;
+                select.style.background = "grey";
+                select2.style.background = "grey";
+        }
+}
+
+function attribute_check2_onchange(){
+
+        check_onchange("select_check2","attribute_select2","attribute_value_select2");
+}
+
+function attribute_check3_onchange(){
+
+        check_onchange("select_check3","attribute_select3","attribute_value_select3");
+}
+
+function attribute_layer_onchange(){
+
+        attribute_select_fill("attribute_select1","attribute_value_select1");
+        attribute_select_fill("attribute_select2","attribute_value_select2");
+        attribute_select_fill("attribute_select3","attribute_value_select3");
+}       
+
+function attribute_select_fill(select_aliase,select_value){
+
+        var select = document.getElementById("attribute_search_layers_select");
+        var layer_text = select.options[select.selectedIndex].text;
+        var layer_feature_id;
+
+        if(service_feature.length != service_layer.layerInfos.length){
+                console.log("service feature number error");
+                return;
+        }
+
+        layer_feature_id = attribute_search_layer_id(layer_text);
+
+        var attribute_select = document.getElementById(select_aliase);
+        var attribute_value_select = document.getElementById(select_value);
+        var aliases = service_feature[layer_feature_id].fieldAliases;
+        var features = service_feature[layer_feature_id].features;
+        
+        attribute_select.innerHTML = "";
+        attribute_value_select.innerHTML = "";
+        var i = 0;
+        var attribute_item;
+        for(var item in aliases){
+                if(i == 0){
+                        attribute_item = item;
+                }
+                i++;
+                var option = document.createElement("option");
+                option.appendChild(document.createTextNode(aliases[item]));
+                attribute_select.appendChild(option);
+        }
+        
+        for(i = 0;i < features.length;i++){
+                var option_value = document.createElement("option");
+                option_value.appendChild(document.createTextNode(features[i].attributes[attribute_item]));
+                attribute_value_select.appendChild(option_value);
+        }
+}
+
+function attribute_aliase_onchange() {
+
+        attribute_search_attribute("attribute_select1","attribute_value_select1");
+}       
+
+
+function attribute2_aliase_onchange() {
+
+        attribute_search_attribute("attribute_select2","attribute_value_select2");
+}       
+
+function attribute3_aliase_onchange() {
+
+        attribute_search_attribute("attribute_select3","attribute_value_select3");
+}       
+
+function attribute_search_attribute(attribute_text,attribute_value){
+
+        if(service_feature.length != service_layer.layerInfos.length){
+                console.log("service feature number error");
+                return;
+        }
+
+        var select = document.getElementById("attribute_search_layers_select");
+        var layer_text = select.options[select.selectedIndex].text;
+        var attribute_select = document.getElementById(attribute_text);
+        var attribute_select_text = attribute_select.options[attribute_select.selectedIndex].text;
+        var attribute_item;
+        var attribute_value_select = document.getElementById(attribute_value);
+        var layer_feature_id;
+        
+        layer_feature_id = attribute_search_layer_id(layer_text);
+        attribute_value_select.innerHTML = "";
+        var features = service_feature[layer_feature_id].features;
+        var aliases = service_feature[layer_feature_id].fieldAliases;
+
+        for(var item in aliases){
+                if(aliases[item] == attribute_select_text){
+                        attribute_item = item;
+                        break;
+                }
+        }
+
+        for(i = 0;i < features.length;i++){
+                var option_value = document.createElement("option");
+                option_value.appendChild(document.createTextNode(features[i].attributes[attribute_item]));
+                attribute_value_select.appendChild(option_value);
+        }
+}
+
+function attribute_search_layer_id(layer_text){
+
+        for(var i = 0;i < service_feature.length;i++){
+                if(service_feature[i].features[0].attributes.name == layer_text){
+                        return i;
+                }
+        }
+}
+
+function locate(){
+
+        var select = document.getElementById("attribute_search_layers_select");
+        var layer_text = select.options[select.selectedIndex].text;
+        var layer_feature_id = attribute_search_layer_id();
+        var locate_query_task = new esri.tasks.QueryTask(service_url+"/"+layer_feature_id);
+        var query = new esri.tasks.Query();
+        var where;
+
+        for(var i = 0;i < 3;i++){
+        }
+
+        query.returnGeometry = true;
+        query.outFields = ["*"];
+
 }
