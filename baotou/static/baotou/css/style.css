@@ -1,5 +1,4 @@
 .menu_list{
-        margin-left:-20px;
 }
 #main_content {
 	display: flex;
@@ -7,16 +6,17 @@
 
 #left_bar {
 	min-height: calc(100vh - 80px);
-	width: 20%;
+	width:231px;
 	padding-top: 6px;
 	background-color: #4C4F5B;
 	color: #dadada;
-	font-size: 16px;
+	font-size: 20px;
 	transition: all 318ms ease-out;
 }
 
+
 #right_bar{
-        width:80%;
+        width:88%;
 }
 
 #right_section .operate_item {
@@ -155,6 +155,7 @@
         margin:2px;
         height:20px;
         width:424px;
+        color:#ffffff;
 }
 
 .select_loop_item{
@@ -267,7 +268,6 @@
 
 #spatial_search{
         display:none;
-        height:355px;
         width:294px;
         background-color:white;
 }
@@ -287,12 +287,11 @@
 }
 
 #spatial_select{
-        height:220px;
+        margin-left:1px;
 }
 
 #btn_layer_select{
-        height:98px;
-        padding:10px;
+        padding:0 0 20px 0;
         text-align:center;
 }
 
@@ -356,6 +355,9 @@ table > thead{
         background-color:#f0f4f9;
 }
 
+.table{
+        table-layout:fixed;
+}
 #spatial_search_all{
         margin-right:34px;
 }
@@ -448,7 +450,6 @@ input[type="text"].fault_search_input{
 
 #layers_control{
         width:200px;
-        height:270px;
         display:none;
 }
 
@@ -497,8 +498,9 @@ input[type="checkbox"].attribute_search_checkbox{
 .sub_menu_container {
 	height: 0;
 	overflow: hidden;
-	margin-left:-20px;
-	transition: all 218ms ease-out;
+	margin-left:-40px;
+    transition: all 218ms ease-out;
+    background-color:#102127;
 }
 
 .sub_menu_container .sub_menu_list {
@@ -518,6 +520,8 @@ input[type="checkbox"].attribute_search_checkbox{
 
 .sub_menu_container .sub_menu_list:hover {
 	color: #75BCF5;
+    background-color:grey;
+    margin-left:10px;
 }
 
 .menu_list_name {
@@ -552,16 +556,14 @@ input[type="checkbox"].attribute_search_checkbox{
 }
 
 .list_icon {
-	width: 18px;
-	margin-right: 4px;
- 	margin-bottom: -3px;
+	width: 23px;
+	margin-right: 13px;
 } 
 
 .list_array {
 	width: 16px;
 	/*float: right;*/
-	vertical-align: middle;
-	margin: 0px 12px 1px 12px;
+	margin: 0px 12px 1px 18px;
 	transition: all 218ms ease-out;
 }
 
@@ -651,17 +653,72 @@ img.tool_bar_image{
         display:none;
 }
 
-#facility_statistics_tools{
-        height:58px;
-        padding:12px;
+#emulation{
+        height:600px;
+        width:700px;
 }
 
-#facility_statistics_btn{
-        float:right;
+#emulation_div{
+        width:100%;
+        height:555px;
 }
 
-#facility_statistics_input{
-        display:inline;
-        width:70%;
+#emulatio_iframe{
+        width:100%;
+        height:100%;
 }
 
+#laycontrol_ul_div{
+        padding-left:1px;
+}
+
+#map_attribute_show{
+        width:700px;
+        display:none;
+}
+
+#map_attribute_title{
+}
+
+#map_attribute_left{
+        width:185px;
+        height:430px;
+        float:left;
+}
+
+#map_attribute_right{
+        width:510px;
+        height:500px;
+        float:left;
+        padding:20px;
+}
+
+
+#map_attribute_content{
+        width:700px;
+        height:430px;
+}
+
+#map_attribute_image_div{
+        width:185px;
+        height:250px;
+        padding:20px;
+}
+
+#map_attribute_image{
+        width:155px;
+        height:210px;
+}
+
+#map_attribute_menu{
+        width:175px;
+        height:110px;
+}
+
+#map_attribute_table{
+        font-size:15px;
+}
+
+#facility_statistics_table{
+        padding:20px 0;
+}

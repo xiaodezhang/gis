@@ -22,11 +22,13 @@ var ymin = 40.528;
 var ymax = 40.705;
 var map_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_ditu/MapServer";
 var service_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_yewu/MapServer";
+var sat_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_yingxiang/MapServer"
 var identify_params;
 var identify_task;
 var map;
 var service_layer;
 var map_layer;
+var sat_layer;
 
 var pointSymbol;
 var pointSymbol1;
@@ -37,6 +39,7 @@ var nav_tool_bar;
 var map_tool_bar;
 var statistics_flag;
 var service_feature = [];
+var facility_property;
 
 
 $(document).ready(function(){
@@ -48,6 +51,7 @@ function map_load(){
         map = new esri.Map("right_bar",{extent:extent,logo:false});
         map_layer = new esri.layers.ArcGISDynamicMapServiceLayer(map_url);
         service_layer = new esri.layers.ArcGISDynamicMapServiceLayer(service_url);
+        sat_layer= new esri.layers.ArcGISDynamicMapServiceLayer(sat_url);
 
         identify_params = new esri.tasks.IdentifyParameters();
         identify_params.tolerance = 3;
@@ -69,7 +73,25 @@ function map_load(){
         dojo.connect(map_tool_bar, "onDrawEnd",draw_end); //监听制图事件
         dojo.connect(service_layer, "onLoad",service_onload);
         statistics_flag = false;
+        get_facility_property();
 
+}
+
+function get_facility_property(){
+
+    $.ajax({
+        type: "GET",
+        url:"facility_property",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (json) {
+
+                facility_property = eval(json);
+        },
+        error:function(){
+                alert("facility property error");
+        }
+    });
 }
 
 //监听制图事件：点、线、框、多边形绘制完毕
@@ -152,6 +174,8 @@ function add_feature_to_list(results){
                 return;
         }
         select.innerHTML = "";
+
+        tbody.innerHTML = "";
         layers_name.push(results[0].layerName);
         layers_id.push(results[0].layerId);
         for(var i = 0;i < results.length;i++){
@@ -218,6 +242,7 @@ function mouse_click(evt){
 
 function attribute_show(results){
 
+
         if(results.length <= 0){
                 return;
         }
@@ -228,11 +253,51 @@ function attribute_show(results){
 
         var symbol = {"point":pointSymbol,"polyline":lineSymbol,"polygon":polygonSymbol};
         var geo_type = results[0].feature.geometry.type;
+        var table = document.getElementById("map_attribute_table");
+        var tbody = table.getElementsByTagName("tbody")[0];
+        var property;
 
+        tbody.innerHTML = "";
         results[0].feature.setSymbol(symbol[geo_type]);
         map.graphics.add(results[0].feature);
-        console.log("attribute_show");
+        for(var item in facility_property){
+                if(facility_property[item][0]['name'] == results[0].layerName){
+                        property = facility_property[item];
+                        break;
+                }
+        }
+        if(property == null){
+                console.log("facility property searhing failed")
+                return;
+        }
 
+        var attributes = results[0].feature.attributes;
+        for(var i = 1;i < property.length-1;i += 2 ){
+                var tr = document.createElement("tr");
+                var td1_text = document.createElement("td");
+                var td1_value = document.createElement("td");
+                var td2_text = document.createElement("td");
+                var td2_value = document.createElement("td");
+                var value_c = attributes[property[i]['item']] == "Null" ? "--"
+                                : attributes[property[i]['item']];
+                var value2_c = attributes[property[i+1]['item']] == "Null" ? "--"
+                                : attributes[property[i+1]['item']];
+
+                td1_text.appendChild(document.createTextNode(property[i]['item']));
+                td1_value.appendChild(document.createTextNode(value_c));
+                td2_text.appendChild(document.createTextNode(property[i+1]['item']));
+                td2_value.appendChild(document.createTextNode(value2_c));
+                td1_text.style.background="rgba(128,128,128,0.11)";
+                td2_text.style.background="rgba(128,128,128,0.11)";
+                tr.appendChild(td1_text);
+                tr.appendChild(td1_value);
+                tr.appendChild(td2_text);
+                tr.appendChild(td2_value);
+                tbody.appendChild(tr);
+        }
+
+        $(".div_menu").css("display","none");
+        $("#map_attribute_show").css("display","block");
 }
 
 function service_onload(){
@@ -255,7 +320,7 @@ function query_task_operation(){
                 query.where = "1=1";
                 query_task.execute(query,function(feature_set){
                         service_feature.push(feature_set);
-                        if(service_feature.length == service_layer,layerInfos.length){
+                        if(service_feature.length == service_layer.layerInfos.length){
                                 attribute_search_create();
                         }
                 });
@@ -343,7 +408,7 @@ function nav_bar_setup(){
             navEvent(evt.target.parentNode.id);
         });
         // 将漫游设置为默认操作
-        navEvent('deactivate');
+//        navEvent('deactivate');
 }
 
 var map_measure = false;
@@ -439,6 +504,7 @@ function navEvent(id) {
 
 function select_clear(){
 
+        draw_mode = false;
         map.setMapCursor("default"); //wy
         map.infoWindow.hide();
         nav_tool_bar.deactivate();
@@ -454,3 +520,13 @@ function layer_select(){
         map_tool_bar.activate(esri.toolbars.Draw.EXTENT);
 }
 
+
+function road_map_show(){
+
+        map.removeLayer(sat_layer);
+}
+
+function sat_map_show(){
+
+        map.addLayer(sat_layer,3);
+}

@@ -3,6 +3,9 @@ from . import views
 
 urlpatterns = [
         url(r'^$',views.index,name='index'),
+        url(r'^locate',views.locate,name='locate'),
+        url(r'^facility_property',views.facility_property),
+        url(r'^facility_name',views.maintain_record),
         url(r'^terminal_data',views.terminal_data),
         url(r'^standing_book_chart',views.standing_book_chart),
         url(r'^standing_book_table',views.standing_book_table),

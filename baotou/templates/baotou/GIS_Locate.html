@@ -1,0 +1,20 @@
+﻿<html>
+    {% load static %}
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>包头绿色照明地理信息系统</title>
+    <link rel="stylesheet" type="text/css" href="http://114.80.168.38:64813/arcgis_js_api/library/3.6/3.6/js/esri/css/esri.css" />
+    <link rel="stylesheet" type="text/css" href="http://114.80.168.38:64813/arcgis_js_api/library/3.6/3.6/js/dojo/dijit/themes/claro/claro.css" />
+    <script type="text/javascript" src="{% static 'baotou/js/jquery-1.9.1.js' %}"></script>
+    <script type="text/javascript" src="http://114.80.168.38:64813/arcgis_js_api/library/3.6/3.6/init.js"></script>
+    <script type="text/javascript" src="{% static 'baotou/js/gis_locate.js' %}"></script>
+</head>
+<body>
+    <div id="MapRegion" style="height: 100%; width: 100%; margin: 0px; overflow: hidden;">
+
+        <div id="mapDiv" style="background-color: #F0F0F0; width: 100%; height: 100%; margin: 0px;
+            overflow: hidden;">
+        </div>
+    </div>
+</body>
+</html>

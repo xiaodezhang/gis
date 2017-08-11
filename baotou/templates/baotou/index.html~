@@ -74,7 +74,6 @@
 						<li class="sub_menu_list" onmousedown="voltage_transformer_standing_book_show()">变压器台账</li>
 						<li class="sub_menu_list" onmousedown="meter_standing_book_show()">计控箱台账</li>
                         <li class="sub_menu_list" onmousedown="lamp_standing_book_show()">路灯台账</li>
-						<li class="sub_menu_list" onmousedown="cable_pit_standing_book_show()">电缆井台账</li>
 						<li class="sub_menu_list" onmousedown="cable_conductor_standing_book_show()">电缆线台账</li>
 					</ul>
 				</li>
@@ -100,11 +99,37 @@
                         <li class="sub_menu_list" onmousedown="fault_factory(0)">厂家设备质量</li>
 					</ul>
 				</li>
-                    </ul>
-            </div>
 
-            <div id="right_bar">
-            </div>
+            <li class="menu_list">
+					<div class="menu_list_name">
+                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png'%}" alt=""/>
+                        三维仿真
+                        <img class="list_array" src="{% static 'baotou/image/gis/array.png'%}" alt=""/>
+					</div>
+					<ul class="sub_menu_container">
+                        <li class="sub_menu_list" onmousedown="emulation_meter_show()">计控箱</li>
+                        <li class="sub_menu_list" onmousedown="emulation_box_show()">箱变模型</li>
+					</ul>
+				</li>
+
+            <li class="menu_list">
+					<div class="menu_list_name">
+                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png'%}" alt=""/>
+                         地图切换
+                        <img class="list_array" src="{% static 'baotou/image/gis/array.png'%}" alt=""/>
+					</div>
+					<ul class="sub_menu_container">
+                        <li class="sub_menu_list" onmousedown="road_map_show()">街景地图</li>
+                        <li class="sub_menu_list" onmousedown="sat_map_show()">卫星地图</li>
+					</ul>
+				</li>
+
+
+                </ul>
+         </div>
+
+         <div id="right_bar">
+         </div>
 
     </div>
 
@@ -115,7 +140,7 @@
                     <image src="{% static 'baotou/image/gis/close.png'%}" onclick="layers_control_close()" 
                          alt="关闭" class="button_close"/>
             </div>
-            <div id="Div_LayerConfig">
+            <div id="laycontrol_ul_div">
                   <ul class="list-group" id="laycontrol_ul">
                        <li class="list-group-item" style="color:#0071bc;">
                            <input class="layers_input" type="checkbox" checked="checked" onclick="layers_control_select_all()" />全选
@@ -146,10 +171,10 @@
                     <button class="btn btn-default btn_layer_select_item"  \
                             onclick="layer_select()">拉框选择</button>
             </div>
-       </div>
+   </div>
 
 
-       <div id="attribute_search" class="div_menu">
+   <div id="attribute_search" class="div_menu">
             <div class="div_title" id="attribute_search_title">
                  <div id="attribute_search_title" class="div_title">
                     <span>属性查询</span>
@@ -193,12 +218,12 @@
 
     <div id="standing_book" class="div_menu">
         <div class="div_title" id="standing_book_title">
-            <span>计控箱台账</span>
+            <span id="standing_book_title_span">计控箱台账</span>
             <img src="{% static 'baotou/image/gis/close.png' %}" onclick="standing_book_close()" class="button_close" />
         </div>
         <div id ="standing_book_btn">
-                <button class="btn btn-primary" onclick="standing_book_team_show()">维护队</button>
-                <button class="btn btn-primary" onclick="standing_book_road_show()">所属道路</button>
+                <button class="btn btn-primary" onclick="standing_book_administrative_region_show()">所属行政区</button>
+                <button class="btn btn-primary" onclick="standing_book_team_show()">所属道路</button>
         </div>
         <div id="standing_book_chart"></div>
         <div id="standing_book_tools">
@@ -312,14 +337,9 @@
                <img src="{% static 'baotou/image/gis/close.png'%}" onclick="search_result_close()"  
                class="button_close" />
        </div>
-       <div id="layer_info_show"> 
-               <select class="form-control" id="search_result_select">
-               </select>
-               <button class="btn btn-default" style="float:right" onclick="detail_info_show()" />详细信息
-       </div>
        <div id="search_result_table">
                <table class="table table-striped" id="table_result">
-                     <thead><th>设施编号</th><th>编号</th><th>设施操作</th> 
+                     <thead><th>设施名称</th><th>编号</th><th>设施操作</th> 
                      </thead> <tbody></tbody>
                </table>
        </div>
@@ -332,10 +352,6 @@
                <img src="{% static 'baotou/image/gis/close.png'%}" onclick="facility_statistics_close()"  
                class="button_close" />
            </div>
-           <div id="facility_statistics_tools">
-                   <input type="text" class="form-control" id="facility_statistics_input"></input>
-                   <button class="btn btn-default" id="facility_statistics_btn">全文搜索</button>
-           </div>
            <div id="facility_statistics_table">
                    <table class="table table-striped" id="table_facility_statistics">
                            <thead><tr> <th>设施名称</th><th>名称</th></tr></thead>
@@ -344,6 +360,27 @@
            </div>
     </div>
 
+    <div id="map_attribute_show" class="div_menu">
+           <div id="map_attribute_title" class="div_title">
+               <span>基础信息</span>
+               <img src="{% static 'baotou/image/gis/间隔线.png'%}" />
+               <span>街景地图</span>
+               <img src="{% static 'baotou/image/gis/间隔线.png'%}" />
+               <span>快捷下单</span>
+               <img src="{% static 'baotou/image/gis/间隔线.png'%}" />
+               <img src="{% static 'baotou/image/gis/close.png'%}" onclick="map_attribute_close()"  
+                               class="button_close" />
+           </div>
+           <div id="map_attribute_content">
+                   <div id="map_attribute_left">
+                           <div id="map_attribute_image_div"><img id="map_attribute_image" src="{% static 'baotou/image/gis/暂无图片.png'%}" /></div>
+                           <div id="map_attribute_menu"></div>
+                   </div>
+                   <div id="map_attribute_right">
+                           <table class="table table-bordered" id="map_attribute_table"><tbody></tbody></table>
+                   </div>
+           </div>
+    </div>
     
                                     
     <div id="Div_ToolBar">

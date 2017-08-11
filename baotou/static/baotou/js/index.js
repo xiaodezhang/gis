@@ -1,5 +1,7 @@
 var fault_type_flag = "terminal"
 var fault_show_type = "chart"
+var draw_mode = false;
+var standing_book_type;
 
 
 
@@ -161,7 +163,7 @@ function fault_table(data){
         }else{
             $("#detail_all").html('<table class="table table-striped" id="fault_table"> \
                      <thead id="fault_head"><tr><th width="30px">ID</th><th width="60px"> \
-                     故障名称</th><th width="50px">设备ID</th><th width="70px">设备名称</th> \
+                     故障名称</th><th width="50px">设备ID</th><th style="width:70px;">设备名称</th> \
                      <th width="60px">消除时间</th><th width="60px">物理地址</th><th width="90px"> \
                      重复报警次数</th></tr></thead><tbody></tbody></table>');
 
@@ -525,29 +527,30 @@ function standing_book_close(){
 
 }
  
-function standing_book_chart(db_table_name,value){
+function standing_book_chart(standing_type,group_type){
 
     $.ajax({
         type: "GET",
         url: "standing_book_chart",
+        data:{"standing_type":standing_type,"group_type":group_type},
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function (json) {
-            var c = eval(json);
 
-            if (c == null || c.length <= 0) {
-                return;
-            }
-            var i;
-            var label_info = [];
-            var value_info = [];
-            for (i = 0; i < c.length; i++) {
-                if (c[i][value] == "" || c[i][value] == " " || c[i][value] == null) {
-                    c[i][value] = "未定义";
+                var data = eval(json)
+                var label_info = [];
+                var value_info = [];
+                var text_name = {"team":"所属维修队","admin_region":"所属行政区"};
+
+                if(data.length <= 0){
+                        console.log("standing book get null!");
+                        return;
                 }
-                label_info[i] = c[i][value];
-                value_info[i] = c[i]["数量"];
-            }
+
+                for(var i = 0;i < data.length;i++){
+                        label_info.push(data[i][text_name[group_type]]);
+                        value_info.push(data[i]['数量']);
+                }
 
             var Chart = echarts.init(document.getElementById('standing_book_chart'));
             var myOption = ({
@@ -558,7 +561,7 @@ function standing_book_chart(db_table_name,value){
                     y2: 30
                 },
                 title: {
-                    text: '计控箱根据'+value + '统计数据',
+                    text: text_name[group_type]+ '统计数据',
                     textStyle: {
                         fontSize: 15
                     },
@@ -602,16 +605,15 @@ function standing_book_chart(db_table_name,value){
             alert("调用出错" + error.responseText);
         }
     });
-
-
 }
 
-function standing_book_table(db_table_name){
+function standing_book_table(standing_type){
 
     $.ajax({
             type: "GET",
             url: "standing_book_table",
             dataType: "json",
+            data:{"standing_type":standing_type},
             contentType: "application/json; charset=utf-8",
             success: function (json) {
 
@@ -651,63 +653,52 @@ function standing_book_table(db_table_name){
             }
 
         });
+}
+
+function standing_book_show(standing_type,group_type){
+
+    var title = {"meter":"计控箱台账","lamp":"路灯台账",
+            "voltage_transformer":"变压器台账","cable_conductor":"电缆线台账"};
+    standing_book_chart(standing_type,group_type);
+    standing_book_table(standing_type);
+    $("#standing_book_title_span").html(title[standing_type]);
+    $(".div_menu").css("diplay","none");
+    $("#standing_book").css("display","block");
 
 }
 
 function meter_standing_book_show(){
 
-    var value = "维护所";
-    var table_name = "jkx_taizhang";
-    standing_book_chart(table_name,value);
-    standing_book_table(table_name);
-    $(".div_menu").css("diplay","none");
-    $("#standing_book").css("display","block");
+    standing_book_type = "meter";    
+    standing_book_show("meter","admin_region");
 }
 
 function lamp_standing_book_show(){
 
-    var value = "维护所";
-    var table_name = "jkx_taizhang";
-    standing_book_chart(table_name,value);
-    standing_book_table(table_name);
-    $(".div_menu").css("diplay","none");
-    $("#standing_book").css("display","block");
+    standing_book_type = "lamp";    
+    standing_book_show("lamp","admin_region");
 }        
 
 function voltage_transformer_standing_book_show(){
 
-    var value = "维护所";
-    var table_name = "jkx_taizhang";
-    standing_book_chart(table_name,value);
-    standing_book_table(table_name);
-    $(".div_menu").css("diplay","none");
-    $("#standing_book").css("display","block");
+    standing_book_type = "voltage_transformer";    
+    standing_book_show("voltage_transformer","admin_region");
 }
 
-function cable_pit_standing_book_show(){
-
-    var value = "维护所";
-    var table_name = "jkx_taizhang";
-    standing_book_chart(table_name,value);
-    standing_book_table(table_name);
-    $(".div_menu").css("diplay","none");
-    $("#standing_book").css("display","block");
-}        
 
 function cable_conductor_standing_book_show(){
 
-    var value = "维护所";
-    var table_name = "jkx_taizhang";
-    standing_book_chart(table_name,value);
-    standing_book_table(table_name);
-    $(".div_menu").css("diplay","none");
-    $("#standing_book").css("display","block");
+    standing_book_type = "cable_conductor";    
+    standing_book_show("cable_conductor","admin_region");
 }        
 
-function standing_book_team_show(){
-        meter_standing_book_show();
+function standing_book_administrative_region_show(){
+
+        standing_book_show(standing_book_type,"admin_region");
 }
-function standing_book_road_show(){
+function standing_book_team_show(){
+
+        standing_book_show(standing_book_type,"team");
 }
 
 function spatial_search_close(){
@@ -746,11 +737,6 @@ function attribute_search_close(){
         $("#attribute_search").css("display","none");
 }
 
-
-function detail_info_show(){
-
-}
-
 function layers_control_select_all() {
      
     var inputs = document.getElementsByClassName("layers_input");
@@ -784,7 +770,6 @@ function facility_statistics_show(){
 
         var table = document.getElementById("table_facility_statistics");
         var tbody = table.getElementsByTagName("tbody")[0];
-        var name = ["变压器","计控箱","电缆线","路灯"]
 
         tbody.innerHTML = "";
         for(var i = 0;i < service_feature.length;i++){
@@ -793,7 +778,7 @@ function facility_statistics_show(){
                 var tbody_td_num = document.createElement("td");
 
 //                tbody_td_name.appendChild(document.createTextNode(feature_set[i].fieldAliases.name))
-                tbody_td_name.appendChild(document.createTextNode(name[i]))
+                tbody_td_name.appendChild(document.createTextNode(service_feature[i].features[0].attributes.layer_name));
                 tbody_td_num.appendChild(document.createTextNode(service_feature[i].features.length));
                 tbody_tr.appendChild(tbody_td_name);
                 tbody_tr.appendChild(tbody_td_num);
@@ -806,6 +791,11 @@ function facility_statistics_show(){
 
 function facility_statistics_poly_show(){
 
+        if(draw_mode){
+                select_clear();
+                return;
+        }
+        draw_mode = true;
         statistics_flag = true;
         select_clear();
         identify_params.layerIds = service_layer.visibleLayers;
@@ -964,7 +954,7 @@ function attribute_search_attribute(attribute_text,attribute_value){
 function attribute_search_layer_id(layer_text){
 
         for(var i = 0;i < service_feature.length;i++){
-                if(service_feature[i].features[0].attributes.name == layer_text){
+                if(service_feature[i].features[0].attributes.layer_name == layer_text){
                         return i;
                 }
         }
@@ -974,16 +964,180 @@ function locate(){
 
         var select = document.getElementById("attribute_search_layers_select");
         var layer_text = select.options[select.selectedIndex].text;
-        var layer_feature_id = attribute_search_layer_id();
+        var layer_feature_id = attribute_search_layer_id(layer_text);
+
+        if(layer_feature_id == 'undefined'){
+                console.log("attribute search layer id error");
+                return;
+        }
         var locate_query_task = new esri.tasks.QueryTask(service_url+"/"+layer_feature_id);
         var query = new esri.tasks.Query();
-        var where;
+        var where_field1 = query_make("attribute_select1","attribute_value_select1"); 
+        var where_field2 = query_make("attribute_select2","attribute_value_select2"); 
+        var where_field3 = query_make("attribute_select3","attribute_value_select3"); 
 
-        for(var i = 0;i < 3;i++){
-
+        if($("#select_check2").checked){
+                where_field1 += "and " + where_field2;
         }
-
+        if($("#select_check3").checked){
+                where_field1 += "and " + where_field3;
+        }
         query.returnGeometry = true;
         query.outFields = ["*"];
+        query.where = where_field1;
+        locate_query_task.execute(query,locate_query_succeeded,locate_query_failed);
+}
 
+function locate_query_succeeded(feature_set){
+
+        if(feature_set.features.length <= 0){
+                console.log("locating query features is null!");
+                alert("没有查到相关记录,请检查输入是否正确!");
+                return;
+        }
+        if(map.graphics.graphics.length > 0){
+                map.graphics.clear();
+        }
+
+        var resultsfeature = feature_set.features;
+        currentFeature = feature_set.features[0];
+        var extent = new esri.geometry.Extent();
+        var xmin = 9999999999999;
+        var xmax = 0;
+        var ymin = 9999999999999;
+        var ymax = 0;
+        if (resultsfeature[0].geometry.type == "point") {//点要素
+            if (resultsfeature.length == 1) {
+                var graphic = resultsfeature[0];
+                graphic.setSymbol(pointSymbol); //选中单个要素闪烁显示
+                map.centerAt(graphic.geometry);
+                map.graphics.add(graphic);
+            }
+            else {
+                for (var i = 0; i < resultsfeature.length; i++) {
+                    var graphic = resultsfeature[i];
+                    graphic.setSymbol(pointSymbol1); //选中多个要素不闪烁
+                    map.graphics.add(graphic);
+                    //设置地图显示范围以包括所有选中要素
+                    var coor_x = resultsfeature[i].geometry.x;
+                    var coor_y = resultsfeature[i].geometry.y;
+                    xmin = xmin > coor_x ? coor_x : xmin;
+                    xmax = xmax > coor_x ? xmax : coor_x;
+                    ymin = ymin > coor_y ? coor_y : ymin;
+                    ymax = ymax > coor_y ? ymax : coor_y;
+                }
+                extent = extent.update(xmin, ymin, xmax, ymax,feature_set.spatialReference);
+                map.setExtent(extent.expand(1.1));
+            }
+        }
+        else {
+            var lastxmin = xmin;
+            var lastymin = ymin;
+            var lastxmax = xmax;
+            var lastymax = ymax;
+            for (var i = 0; i < resultsfeature.length; i++) {
+                var graphic = resultsfeature[i];
+                if (graphic.geometry.type == "polyline") {//线要素
+                    graphic.setSymbol(lineSymbol);
+                }
+                else if (graphic.geometry.type == "polygon") {//面要素
+                    graphic.setSymbol(polygonSymbol);
+                }
+                if (resultsfeature[i].geometry.getExtent() != null) {
+                    var ext = resultsfeature[i].geometry.getExtent();
+                    map.graphics.add(graphic);
+                    xmin = xmin > ext.xmin ? ext.xmin : xmin;
+                    ymin = ymin > ext.ymin ? ext.ymin : ymin;
+                    xmax = xmax > ext.xmax ? xmax : ext.xmax;
+                    ymax = ymax > ext.ymax ? ymax : ext.ymax;
+                }
+            }
+            if (lastxmin == xmin && lastymin == ymin && lastxmax == xmax && lastymax == ymax)
+                alert("查询到的结果没有空间图形");
+            else {
+                extent = extent.update(xmin, ymin, xmax, ymax,feature_set.spatialReference);
+                map.setExtent(extent.expand(1.1));
+            }
+        }
+        attribute_to_list(feature_set);
+}
+
+function attribute_to_list(feature_set){
+
+        var table = document.getElementById("table_result");
+        var tbody = table.getElementsByTagName("tbody")[0];
+        
+
+        if(feature_set.features.length <= 0){
+                return;
+        }
+        tbody.innerHTML = "";
+        for(var i = 0;i < feature_set.features.length;i++){
+                var tbody_tr = document.createElement("tr");
+                var tbody_td_name = document.createElement("td");
+                var tbody_td_id = document.createElement("td");
+                var tbody_td_operation = document.createElement("td");
+                var img_op_locate = document.createElement("img");
+                var img_op_info = document.createElement("img");
+                
+                img_op_locate.src = "../../static/baotou/image/gis/pictures/locate.png";
+                img_op_locate.id = "op_locate_img";
+                img_op_info.src = "../../static/baotou/image/gis/pictures/AttributesWindow.png";
+                tbody_td_operation.appendChild(img_op_locate);
+                tbody_td_operation.appendChild(img_op_info);
+                tbody_td_operation.appendChild(img_op_info);
+                tbody_td_name.appendChild(document.createTextNode(feature_set.features[i].attributes.layer_name));
+                tbody_td_id.appendChild(document.createTextNode(feature_set.features[i].attributes.OBJECTID));
+                tbody_tr.appendChild(tbody_td_name);
+                tbody_tr.appendChild(tbody_td_id);
+                tbody_tr.appendChild(tbody_td_operation);
+                tbody.appendChild(tbody_tr);
+        }
+        $(".div_menu").css("display","none");
+        $("#search_result").css("display","block");
+}
+
+function locate_query_failed(){
+
+        console.log("locating query failed!");
+}
+
+function query_make(select_s,select_value_s){
+
+        var select = document.getElementById(select_s);
+        var query_field = select.value;
+        var options = select.options[select.selectedIndex];
+        var select_value = document.getElementById(select_value_s)
+        var query_value = select_value.value;
+        var where;
+
+        where =  query_field + "='" + query_value + "'";
+        return where
+}
+function emulation_meter_show(){
+
+        window.location.href = "http://58.211.255.58:5098/pubdisplay/jkx/jkx.htm";
+
+        /*
+        var iframe = document.getElementById("emulation_iframe");
+        iframe.src = "http://58.211.255.58:5098/pubdisplay/jkx/jkx.htm";
+        */
+}
+
+function emulation_box_show(){
+
+        window.location.href = "http://58.211.255.58:5098/pubdisplay/jkx/jkx.htm";
+        /*
+        var iframe = document.getElementById("emulation_iframe");
+        iframe.src = "http://58.211.255.58:5098/pubdisplay/xiangbian/xiangbian.htm";
+        */
+}
+
+function emulation_close(){
+
+        $("#emulation").css("display","none");
+}
+
+function map_attribute_close(){
+        $("#map_attribute_show").css("display","none");
 }
