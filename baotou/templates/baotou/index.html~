@@ -337,6 +337,11 @@
                <img src="{% static 'baotou/image/gis/close.png'%}" onclick="search_result_close()"  
                class="button_close" />
        </div>
+      <div id="layer_info_show"> 
+               <select class="form-control" id="search_result_select">
+               </select>
+               <button class="btn btn-default" style="float:right" onclick="detail_info_show()" />详细信息
+       </div>
        <div id="search_result_table">
                <table class="table table-striped" id="table_result">
                      <thead><th>设施名称</th><th>编号</th><th>设施操作</th> 
@@ -374,7 +379,9 @@
            <div id="map_attribute_content">
                    <div id="map_attribute_left">
                            <div id="map_attribute_image_div"><img id="map_attribute_image" src="{% static 'baotou/image/gis/暂无图片.png'%}" /></div>
-                           <div id="map_attribute_menu"></div>
+                           <div id="map_attribute_menu">
+                                   <button class="btn btn-primary" onclick="maintain_record_show()" >维修记录</button>
+                           </div>
                    </div>
                    <div id="map_attribute_right">
                            <table class="table table-bordered" id="map_attribute_table"><tbody></tbody></table>

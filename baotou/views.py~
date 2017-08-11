@@ -126,12 +126,17 @@ def maintain_record(request):
     try:
         conn = pymssql.connect("192.168.50.80","sa","sa","flow_common")
         cursor = conn.cursor(as_dict=True)
-        tmlid = request.GET.get('tmlid') 
-        cursor.execute("SELECT * FROM dbo.WorkOrderManagementAttachProcess where FacilityName=%s" % facility_name)
-        data_json = json.dumps(cursor.fetchall())
-        return JsonResponse(data_json,safe=False)
     except:
         print "db connect failed"
+    facility_name = request.GET.get('facility_name') 
+
+    cursor.execute("SELECT sys_id,FacilityType,FacilityName,MaterialName,SizeType,manufacturer FROM flow_common.dbo.WorkOrderManagementAttachProcess where FacilityName='%s'" % facility_name)
+#    cursor.execute("SELECT * FROM flow_common.dbo.WorkOrderManagementAttachProcess where FacilityName='青年大道001'")
+
+#    print cursor.fetchall()
+    data_json = json.dumps(cursor.fetchall())
+    return JsonResponse(data_json,safe=False)
+
 
 
 

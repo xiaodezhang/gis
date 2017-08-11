@@ -713,6 +713,7 @@ img.tool_bar_image{
 #map_attribute_menu{
         width:175px;
         height:110px;
+        padding-left:20px
 }
 
 #map_attribute_table{

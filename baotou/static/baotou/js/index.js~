@@ -737,7 +737,6 @@ function attribute_search_close(){
         $("#attribute_search").css("display","none");
 }
 
-
 function layers_control_select_all() {
      
     var inputs = document.getElementsByClassName("layers_input");
@@ -892,6 +891,7 @@ function attribute_select_fill(select_aliase,select_value){
                 i++;
                 var option = document.createElement("option");
                 option.appendChild(document.createTextNode(aliases[item]));
+                option.value = item;
                 attribute_select.appendChild(option);
         }
         
@@ -961,11 +961,20 @@ function attribute_search_layer_id(layer_text){
         }
 }
 
+function locate_layer_id(layer_text){
+
+        for(var i = 0;i < service_layer.layerInfos.length;i++){
+                if(service_layer.layerInfos[i].name == layer_text){
+                        return i;
+                }
+        }
+}
+
 function locate(){
 
         var select = document.getElementById("attribute_search_layers_select");
         var layer_text = select.options[select.selectedIndex].text;
-        var layer_feature_id = attribute_search_layer_id(layer_text);
+        var layer_feature_id = locate_layer_id(layer_text);
 
         if(layer_feature_id == 'undefined'){
                 console.log("attribute search layer id error");
@@ -1141,4 +1150,35 @@ function emulation_close(){
 
 function map_attribute_close(){
         $("#map_attribute_show").css("display","none");
+}
+
+function maintain_record_show(){
+
+    var table = document.getElementById("map_attribute_table");
+    var tbody = table.getElementsByTagName("tbody")[0];
+    var tds = tbody.getElementsByTagName("td");
+    var facility_name;
+
+    for(var i = 0;i < tds.length;i++){
+            if(tds[i].innerText == "标签编号"){
+                    facility_name = tds[i+1].innerText;
+                    break;
+            }
+    }
+
+    $.ajax({
+        type: "GET",
+        url:"maintain_record",
+        data:{"facility_name":facility_name},
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (json) {
+
+                var data = eval(json);
+        },
+        error:function(){
+                alert("fault error");
+        }
+    });
+
 }
