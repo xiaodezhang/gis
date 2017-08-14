@@ -167,7 +167,7 @@
             </div>
             <div id="btn_layer_select">
                     <button class="btn btn-default btn_layer_select_item" \
-                            onclick="layer_select_poly()">画面选择</button>
+                            onclick="layer_select_poly()">多边形选择</button>
                     <button class="btn btn-default btn_layer_select_item"  \
                             onclick="layer_select()">拉框选择</button>
             </div>
@@ -338,9 +338,9 @@
                class="button_close" />
        </div>
       <div id="layer_info_show"> 
-               <select class="form-control" id="search_result_select">
+              <span>图层选择:</span>
+               <select class="form-control" id="search_result_select" onchange="search_result_layer_select()">
                </select>
-               <button class="btn btn-default" style="float:right" onclick="detail_info_show()" />详细信息
        </div>
        <div id="search_result_table">
                <table class="table table-striped" id="table_result">

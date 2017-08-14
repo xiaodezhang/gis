@@ -40,6 +40,7 @@ var map_tool_bar;
 var statistics_flag;
 var service_feature = [];
 var facility_property;
+var task_results;
 
 
 $(document).ready(function(){
@@ -112,6 +113,7 @@ function task_complete(results){
 
         if(results.length < 0)
                 return;
+        task_results = results;
         for(var i = 0;i < results.length;i++){
                 var symbol = {"point":pointSymbol,"polyline":lineSymbol,"polygon":polygonSymbol};
 
@@ -121,7 +123,7 @@ function task_complete(results){
         if(statistics_flag){
                 facility_statistics_poly_table_create(results);
         }else{
-            add_feature_to_list(results);
+            task_result_show(results);
         }
 }
 
@@ -161,7 +163,21 @@ function facility_statistics_poly_table_create(results){
         $("#facility_statistics").css("display","block");
 }
 
-function add_feature_to_list(results){
+function task_result_show(results){
+
+        var layer_name = []
+        var layer_id = []
+
+        for(var i = 0;i < results.length;i++){
+                layer_name.push(results[i].layerName);
+                layer_id.push(results[i].layerId);
+        }
+
+        add_feature_to_list(layer_name,layer_id,false);
+
+}
+
+function add_feature_to_list(layer_name,layer_id,onchange_bool){
 
         var select = document.getElementById("search_result_select");
         var table = document.getElementById("table_result");
@@ -170,15 +186,10 @@ function add_feature_to_list(results){
         var layers_name = new Array();
         var layers_id= new Array();
 
-        if(results.length <= 0){
-                return;
-        }
-        select.innerHTML = "";
-
         tbody.innerHTML = "";
-        layers_name.push(results[0].layerName);
-        layers_id.push(results[0].layerId);
-        for(var i = 0;i < results.length;i++){
+        layers_name.push("All");
+        layers_id.push(0);
+        for(var i = 0;i < layer_name.length;i++){
                 var tbody_tr = document.createElement("tr");
                 var tbody_td_name = document.createElement("td");
                 var tbody_td_id = document.createElement("td");
@@ -192,23 +203,26 @@ function add_feature_to_list(results){
                 tbody_td_operation.appendChild(img_op_locate);
                 tbody_td_operation.appendChild(img_op_info);
                 tbody_td_operation.appendChild(img_op_info);
-                tbody_td_name.appendChild(document.createTextNode(results[i].layerName));
-                tbody_td_id.appendChild(document.createTextNode(results[i].layerId));
+                tbody_td_name.appendChild(document.createTextNode(layer_name[i]));
+                tbody_td_id.appendChild(document.createTextNode(layer_id[i]));
                 tbody_tr.appendChild(tbody_td_name);
                 tbody_tr.appendChild(tbody_td_id);
                 tbody_tr.appendChild(tbody_td_operation);
                 tbody.appendChild(tbody_tr);
-                if(layers_name.indexOf(results[i].layerName) < 0){
-                        layers_name.push(results[i].layerName);
-                        layers_id.push(results[i].layerId);
+                if(layers_name.indexOf(layer_name[i]) < 0){
+                        layers_name.push(layer_name[i]);
+                        layers_id.push(layer_id[i]);
                 }
                 
         }
-        for(i = 0;i < layers_name.length;i++){
-                var option = document.createElement("option");
-                var option_text = document.createTextNode(layers_name[i]);
-                option.appendChild(option_text);
-                select.appendChild(option);
+        if(!onchange_bool){
+                select.innerHTML = "";
+                for(i = 0;i < layers_name.length;i++){
+                        var option = document.createElement("option");
+                        var option_text = document.createTextNode(layers_name[i]);
+                        option.appendChild(option_text);
+                        select.appendChild(option);
+                }
         }
 
         $(".div_menu").css("display","none");

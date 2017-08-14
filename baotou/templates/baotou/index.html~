@@ -167,7 +167,7 @@
             </div>
             <div id="btn_layer_select">
                     <button class="btn btn-default btn_layer_select_item" \
-                            onclick="layer_select_poly()">画面选择</button>
+                            onclick="layer_select_poly()">多边形选择</button>
                     <button class="btn btn-default btn_layer_select_item"  \
                             onclick="layer_select()">拉框选择</button>
             </div>
@@ -338,9 +338,9 @@
                class="button_close" />
        </div>
       <div id="layer_info_show"> 
+              <span>图层选择:</span>
                <select class="form-control" id="search_result_select">
                </select>
-               <button class="btn btn-default" style="float:right" onclick="detail_info_show()" />详细信息
        </div>
        <div id="search_result_table">
                <table class="table table-striped" id="table_result">
@@ -379,9 +379,6 @@
            <div id="map_attribute_content">
                    <div id="map_attribute_left">
                            <div id="map_attribute_image_div"><img id="map_attribute_image" src="{% static 'baotou/image/gis/暂无图片.png'%}" /></div>
-                           <div id="map_attribute_menu">
-                                   <button class="btn btn-primary" onclick="maintain_record_show()" >维修记录</button>
-                           </div>
                    </div>
                    <div id="map_attribute_right">
                            <table class="table table-bordered" id="map_attribute_table"><tbody></tbody></table>

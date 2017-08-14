@@ -2,6 +2,8 @@ var fault_type_flag = "terminal"
 var fault_show_type = "chart"
 var draw_mode = false;
 var standing_book_type;
+var query_results;
+var spatial_or_attribute_flag;
 
 
 
@@ -513,6 +515,8 @@ function loop_move(){
 }
 
 function spatial_search_show(){
+
+        spatial_or_attribute_flag = "spatial";
         if($("#spatial_search").css("display") != "none"){
                 $("#spatial_search").css("display","none");
                 return
@@ -816,6 +820,7 @@ function layer_select_poly(){
 
 function attribute_search_show(){
 
+        spatial_or_attribute_flag = "attribute";
         if($("#attribute_search").css("display") != "none"){
             $("#attribute_search").css("display","none");
                 return;
@@ -1005,10 +1010,10 @@ function locate_query_succeeded(feature_set){
                 alert("没有查到相关记录,请检查输入是否正确!");
                 return;
         }
+        query_results = feature_set;
         if(map.graphics.graphics.length > 0){
                 map.graphics.clear();
         }
-
         var resultsfeature = feature_set.features;
         currentFeature = feature_set.features[0];
         var extent = new esri.geometry.Extent();
@@ -1069,42 +1074,20 @@ function locate_query_succeeded(feature_set){
                 map.setExtent(extent.expand(1.1));
             }
         }
-        attribute_to_list(feature_set);
+        query_results_show(feature_set);
 }
 
-function attribute_to_list(feature_set){
 
-        var table = document.getElementById("table_result");
-        var tbody = table.getElementsByTagName("tbody")[0];
-        
+function query_results_show(feature_set){
 
-        if(feature_set.features.length <= 0){
-                return;
-        }
-        tbody.innerHTML = "";
+        var layer_name = [];
+        var layer_id = [];
+
         for(var i = 0;i < feature_set.features.length;i++){
-                var tbody_tr = document.createElement("tr");
-                var tbody_td_name = document.createElement("td");
-                var tbody_td_id = document.createElement("td");
-                var tbody_td_operation = document.createElement("td");
-                var img_op_locate = document.createElement("img");
-                var img_op_info = document.createElement("img");
-                
-                img_op_locate.src = "../../static/baotou/image/gis/pictures/locate.png";
-                img_op_locate.id = "op_locate_img";
-                img_op_info.src = "../../static/baotou/image/gis/pictures/AttributesWindow.png";
-                tbody_td_operation.appendChild(img_op_locate);
-                tbody_td_operation.appendChild(img_op_info);
-                tbody_td_operation.appendChild(img_op_info);
-                tbody_td_name.appendChild(document.createTextNode(feature_set.features[i].attributes.layer_name));
-                tbody_td_id.appendChild(document.createTextNode(feature_set.features[i].attributes.OBJECTID));
-                tbody_tr.appendChild(tbody_td_name);
-                tbody_tr.appendChild(tbody_td_id);
-                tbody_tr.appendChild(tbody_td_operation);
-                tbody.appendChild(tbody_tr);
+                layer_name.push(feature_set.features[i].attributes.layer_name);
+                layer_id.push(feature_set.features[i].attributes.OBJECTID);
         }
-        $(".div_menu").css("display","none");
-        $("#search_result").css("display","block");
+        add_feature_to_list(layer_name,layer_id,false);
 }
 
 function locate_query_failed(){
@@ -1124,6 +1107,7 @@ function query_make(select_s,select_value_s){
         where =  query_field + "='" + query_value + "'";
         return where
 }
+
 function emulation_meter_show(){
 
         window.location.href = "http://58.211.255.58:5098/pubdisplay/jkx/jkx.htm";
@@ -1154,6 +1138,7 @@ function map_attribute_close(){
 
 function maintain_record_show(){
 
+        /*
     var table = document.getElementById("map_attribute_table");
     var tbody = table.getElementsByTagName("tbody")[0];
     var tds = tbody.getElementsByTagName("td");
@@ -1181,4 +1166,36 @@ function maintain_record_show(){
         }
     });
 
+        */
+}
+
+function search_result_layer_select(){
+
+        var select = document.getElementById("search_result_select");
+        var layer_text = select.options[select.selectedIndex].text;
+        var layer_name = [];
+        var layer_id = [];
+        var results_layer_name = [];
+        var results_layer_id = [];
+
+        if(spatial_or_attribute_flag == "spatial"){
+                for(var i = 0;i < task_results.length;i++){
+                        results_layer_name.push(task_results[i].layerName)
+                        results_layer_id.push(task_results[i].feature.attributes.OBJECTID);
+                }
+        }else{
+                for(var i = 0;i < query_results.features.length;i++){
+                        results_layer_name.push(query_results.features[i].attributes.layer_name);
+                        results_layer_id.push(query_results.features[i].attributes.OBJECTID);
+                }
+        }
+
+        for(var i = 0;i < results_layer_name.length;i++){
+                if(results_layer_name[i] == layer_text || 
+                        layer_text == 'All'){
+                        layer_name.push(results_layer_name[i]);
+                        layer_id.push(results_layer_id[i]);
+                }
+        }
+        add_feature_to_list(layer_name,layer_id,true);
 }

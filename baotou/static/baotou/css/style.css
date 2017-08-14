@@ -259,7 +259,7 @@
 
 #detail_all{
         width:735px;
-        height:410px;
+        height:450px;
         overflow:auto;
 }
 
@@ -374,8 +374,9 @@ input[type="checkbox"].spatial_search_item{
 }
 
 #layer_info_show{
-        height:66px;
-        padding:17px 18px 17px 22px;
+        height:55px;
+        padding:12px 18px 17px 22px;
+        font-size:18px;
 }
 
 #search_result_table{
@@ -385,7 +386,8 @@ input[type="checkbox"].spatial_search_item{
 
 #search_result_select{
         display:inline;
-        width:300px;
+        width:333px;
+        margin-left:8px;
 }
 
 #op_locate_img{
