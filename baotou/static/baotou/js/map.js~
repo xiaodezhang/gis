@@ -48,6 +48,7 @@ $(document).ready(function(){
 });
 
 function map_load(){
+
         var extent = new esri.geometry.Extent({"xmin":xmin,"xmax":xmax,"ymin":40.528,"ymax":ymax});
         map = new esri.Map("right_bar",{extent:extent,logo:false});
         map_layer = new esri.layers.ArcGISDynamicMapServiceLayer(map_url);
@@ -75,7 +76,6 @@ function map_load(){
         dojo.connect(service_layer, "onLoad",service_onload);
         statistics_flag = false;
         get_facility_property();
-
 }
 
 function get_facility_property(){
@@ -170,7 +170,7 @@ function task_result_show(results){
 
         for(var i = 0;i < results.length;i++){
                 layer_name.push(results[i].layerName);
-                layer_id.push(results[i].layerId);
+                layer_id.push(results[i].feature.attributes.OBJECTID);
         }
 
         add_feature_to_list(layer_name,layer_id,false);

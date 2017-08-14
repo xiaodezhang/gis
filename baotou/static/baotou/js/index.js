@@ -59,27 +59,10 @@ function fault_chart(data){
             var obname = data[i][keyname[0]];
             xaxis[i] =  obname;
             yaxis[i] = data[i].number;
-                   
     }
 
     var option_bar = ({
             grid:{x:30,x2:25,y:40,y2:30},
-            /*
-            title:{
-                    text:'故障类型直方图',
-                    textStyle:{fontSize:15},
-                    x: 'center',
-                    y:10
-            },
-            tooltip:{trigger:'axis'},
-            toolbox:{
-                    show:true,
-                    feature:{
-                            magicType:{show:true,type:['line','bar']},
-                            saveAsImage:{show:true}
-                    }
-            },
-            */
             calculable:true,
             xAxis:[{
                     type:'category',
@@ -106,49 +89,17 @@ function fault_chart(data){
             data_pie.push({"value":data[i].number,"name":obname});
     }
     option_pie = {
-
-            /*
-    title : {
-        text: '故障类型饼状图',
-        x:'right'
-    },
-    tooltip : {
-        trigger: 'item',
-        formatter: "{a} <br/>{b} : {c} ({d}%)"
-    },
-    toolbox: {
-        show : true,
-        feature : {
-            mark : {show: true},
-            dataView : {show: true, readOnly: false},
-            magicType : {
-                show: true, 
-                type: ['pie', 'funnel'],
-                option: {
-                    funnel: {
-                        x: '25%',
-                        width: '50%',
-                        funnelAlign: 'left',
-                        max: 1548
-                    }
+            calculable : true,
+            series : [
+                {
+                    name:'访问来源',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['55%', '60%'],
+                    data: data_pie,
                 }
-            },
-            restore : {show: true},
-            saveAsImage : {show: true}
-        }
-    },
-            */
-    calculable : true,
-    series : [
-        {
-            name:'访问来源',
-            type:'pie',
-            radius : '55%',
-            center: ['55%', '60%'],
-            data: data_pie,
-        }
-    ]
-};
+            ]
+    };
                     
     chart_pie.setOption(option_pie);
 
@@ -185,90 +136,6 @@ function fault_table(data){
                 tbody.appendChild(tbody_tr);
         }
 }
-/*
-function fault_table(data){
-        var row_width= parseInt($("#detail_all").css("width"));
-        var table_id = $("#detail_all").html("<table id='dgrid'></table>");
-        var rows = [];
-        if(fault_type_flag == "factory"){
-                for(var i = 0;i < data.length;i++){
-                        rows.push({
-                                facid:data[i].facid,
-                                facname:data[i].facname,
-                                ledbool:data[i].ledbool,
-                                installtime:data[i].installtime,
-                                changetime:data[i].changetime,
-                                lifetime:data[i].lifetime,
-                        });
-                }
-                var columns= [[
-                         {field:'facid',title:'facid',width:row_width*0.12,align:'center'},
-                         {field:'facname',title:'facname',width:row_width*0.12,align:'center'},
-                         {field:'ledbool',title:'ledbool',width:row_width*0.12,align:'center'},
-                         {field:'installtime',title:'installtime',width:row_width*0.20,align:'center'},
-                         {field:'changetime',title:'changetime',width:row_width*0.12,align:'center'},
-                         {field:'lifetime',title:'lifetime',width:row_width*0.12,align:'center'},
-                ]];
-
-                
-        }else{
-                for(var i = 0;i < data.length;i++){
-                        rows.push({
-                                errid:data[i].errid,
-                                errname:data[i].errname,
-                                tmlid:data[i].tmlid,
-                                tmlname:data[i].tmlname,
-                                dtcreate:data[i].dtcreate,
-                                dtremove:data[i].dtremove,
-                                phyid:data[i].phyid,
-                                tml_sub_id1:data[i].tml_sub_id1,
-                                tml_sub_id2:data[i].tml_sub_id2,
-                                errcount:data[i].errcount,
-                                type:data[i].type,
-                        });
-                }
-                var columns= [[
-                         {field:'errid',title:'errid',width:row_width*0.12,align:'center'},
-                         {field:'errname',title:'errname',width:row_width*0.12,align:'center'},
-                         {field:'tmlid',title:'tmlid',width:row_width*0.12,align:'center'},
-                         {field:'tmlname',title:'tmlname',width:row_width*0.20,align:'center'},
-                         {field:'dtcreate',title:'dtcreate',width:row_width*0.12,align:'center'},
-                         {field:'dtremove',title:'dtremove',width:row_width*0.12,align:'center'},
-                         {field:'phyid',title:'phyid',width:row_width*0.12,align:'center'},
-//                         {field:'tml_sub_id1',title:'tml_sub_id1',width:row_width*0.12,align:'center'},
-//                         {field:'tml_sub_id2',title:'tml_sub_id2',width:row_width*0.12,align:'center'},
-                         {field:'errcount',title:'errcount',width:row_width*0.12,align:'center'},
-                         {field:'type',title:'type',width:row_width*0.12,align:'center'},
-                ]];
-        }
-
-
-        $("#dgrid").datagrid({
-                iconCls:'icon-save',
-                width: row_width,
-                idField:'errid',
-                pagination:true,
-                data:rows.slice(0,13),
-                frozenColumns: columns,
-        });
-
-        var pager = $("#dgrid").datagrid("getPager");  
-        pager.pagination({  
-                total:rows.length,  
-                pageSize:13,
-                showPageList:false,
-                onSelectPage:function (pageNo, pageSize) {  
-                    var start = (pageNo - 1) * pageSize;  
-                    var end = start + pageSize;  
-                    $("#dgrid").datagrid("loadData", data.slice(start, end));  
-                    pager.pagination('refresh', {  
-                        total:rows.length,  
-                        pageNumber:pageNo  
-                    });  
-                }  
-            });  
-}
-*/
 
 function get_fault_data(fault_data_type,type){
 
@@ -321,6 +188,7 @@ function fault_factory(){
 }
 
 function close_fault(){
+
     $("#fault_statistics").css("display","none");
 }
 
@@ -340,7 +208,6 @@ function fault_table_show(){
                                 "factory" : "fault_factory_table"};
         show_table(fault_data_type[fault_type_flag]);
 }
-
 
 function show_chart(fault_data_type){
         $("#detail_all").css("overflow","visible");
@@ -407,7 +274,6 @@ function terminal_table_show(){
                 alert("fault error");
         }
     });
-
 }
 
 function terminal_table_create(data){
@@ -433,7 +299,6 @@ function terminal_table_create(data){
                         tbody_td.appendChild(document.createTextNode(data[i][item]));
                         tbody_tr.appendChild(tbody_td);
                 }
-
                 tbody.appendChild(tbody_tr);
         }
 }
@@ -510,8 +375,6 @@ function loop_move(){
         for(var i = 0;i < input_items.length;i++){
                 input_items[i].checked = "";
         }
-
-
 }
 
 function spatial_search_show(){

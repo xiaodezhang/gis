@@ -48,6 +48,7 @@ $(document).ready(function(){
 });
 
 function map_load(){
+
         var extent = new esri.geometry.Extent({"xmin":xmin,"xmax":xmax,"ymin":40.528,"ymax":ymax});
         map = new esri.Map("right_bar",{extent:extent,logo:false});
         map_layer = new esri.layers.ArcGISDynamicMapServiceLayer(map_url);
@@ -75,7 +76,6 @@ function map_load(){
         dojo.connect(service_layer, "onLoad",service_onload);
         statistics_flag = false;
         get_facility_property();
-
 }
 
 function get_facility_property(){
@@ -95,7 +95,6 @@ function get_facility_property(){
     });
 }
 
-//监听制图事件：点、线、框、多边形绘制完毕
 function draw_end(geometry) {
 
         if (map.graphics.graphics.length > 0) {

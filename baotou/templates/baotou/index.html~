@@ -34,7 +34,7 @@
                     <ul id="menu_container" class="list-group">
 				<li class="menu_list" class="list-group-item">
 					<div class="menu_list_name">
-                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" />
+                            <img class="list_icon" src="{% static 'baotou/image/gis/guide/设施管理.png' %}" />
 						设施管理
                         <img class="list_array" src="{% static 'baotou/image/gis/array.png' %}" />
 					</div>
@@ -44,7 +44,7 @@
 				</li>
 				<li class="menu_list">
 					<div class="menu_list_name">
-                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" alt=""/>
+                            <img class="list_icon" src="{% static 'baotou/image/gis/guide/设施查询.png' %}" alt=""/>
 						设施查询
                         <img class="list_array" src="{% static 'baotou/image/gis/array.png' %}" alt=""/>
 					</div>
@@ -55,7 +55,7 @@
 				</li>
 				<li class="menu_list">
 					<div class="menu_list_name">
-                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" alt=""/>
+                            <img class="list_icon" src="{% static 'baotou/image/gis/guide/设施统计.png' %}" alt=""/>
 						设施统计
                         <img class="list_array" src="{% static 'baotou/image/gis/array.png'%}" alt=""/>
 					</div>
@@ -66,7 +66,7 @@
 				</li>
                 <li class="menu_list">
 					<div class="menu_list_name">
-                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" alt=""/>
+                            <img class="list_icon" src="{% static 'baotou/image/gis/guide/设施台账.png' %}" alt=""/>
 						设施台账
                         <img class="list_array" src="{% static 'baotou/image/gis/array.png' %}" alt=""/>
 					</div>
@@ -79,7 +79,7 @@
 				</li>
                 <li class="menu_list">
 					<div class="menu_list_name">
-                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" alt=""/>
+                            <img class="list_icon" src="{% static 'baotou/image/gis/guide/三遥联动.png' %}" alt=""/>
 						三遥联动
                         <img class="list_array" src="{% static 'baotou/image/gis/array.png' %}" alt=""/>
 					</div>
@@ -89,7 +89,7 @@
 				</li>
                 <li class="menu_list">
 					<div class="menu_list_name">
-                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png' %}" alt=""/>
+                            <img class="list_icon" src="{% static 'baotou/image/gis/guide/故障分析.png' %}" alt=""/>
 						故障分析
                         <img class="list_array" src="{% static 'baotou/image/gis/array.png' %}" alt=""/>
 					</div>
@@ -102,7 +102,7 @@
 
             <li class="menu_list">
 					<div class="menu_list_name">
-                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png'%}" alt=""/>
+                            <img class="list_icon" src="{% static 'baotou/image/gis/guide/三维仿真.png'%}" alt=""/>
                         三维仿真
                         <img class="list_array" src="{% static 'baotou/image/gis/array.png'%}" alt=""/>
 					</div>
@@ -114,7 +114,7 @@
 
             <li class="menu_list">
 					<div class="menu_list_name">
-                            <img class="list_icon" src="{% static 'baotou/image/gis/home_icon.png'%}" alt=""/>
+                            <img class="list_icon" src="{% static 'baotou/image/gis/guide/home_icon.png'%}" alt=""/>
                          地图切换
                         <img class="list_array" src="{% static 'baotou/image/gis/array.png'%}" alt=""/>
 					</div>
@@ -339,7 +339,7 @@
        </div>
       <div id="layer_info_show"> 
               <span>图层选择:</span>
-               <select class="form-control" id="search_result_select">
+               <select class="form-control" id="search_result_select" onchange="search_result_layer_select()">
                </select>
        </div>
        <div id="search_result_table">
