@@ -20,8 +20,8 @@ var xmin = 109.729;
 var xmax = 110.068;
 var ymin = 40.528;
 var ymax = 40.705;
-var map_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_ditu/MapServer";
-var service_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_yewu/MapServer";
+var map_url = "http://localhost:33819/ArcGIS/rest/services/baotou_ditu/MapServer";
+var service_url = "http://localhost:33819/ArcGIS/rest/services/baotou_yewu/MapServer";
 var sat_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_yingxiang/MapServer"
 var identify_params;
 var identify_task;
@@ -95,7 +95,6 @@ function get_facility_property(){
     });
 }
 
-//监听制图事件：点、线、框、多边形绘制完毕
 function draw_end(geometry) {
 
         if (map.graphics.graphics.length > 0) {

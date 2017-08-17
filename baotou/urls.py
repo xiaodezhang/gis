@@ -7,6 +7,7 @@ urlpatterns = [
         url(r'^facility_property',views.facility_property),
         url(r'^maintain_record',views.maintain_record),
         url(r'^terminal_data',views.terminal_data),
+        url(r'^lamp_data',views.lamp_data),
         url(r'^standing_book_chart',views.standing_book_chart),
         url(r'^standing_book_table',views.standing_book_table),
         url(r'^fault_terminal_chart',views.fault_terminal_chart),

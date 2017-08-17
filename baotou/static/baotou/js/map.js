@@ -21,7 +21,7 @@ var xmax = 110.068;
 var ymin = 40.528;
 var ymax = 40.705;
 var map_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_ditu/MapServer";
-var service_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_yewu/MapServer";
+var service_url = "http://localhost:33819/ArcGIS/rest/services/baotou_yewu/MapServer";
 var sat_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_yingxiang/MapServer"
 var identify_params;
 var identify_task;

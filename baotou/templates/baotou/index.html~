@@ -114,7 +114,7 @@
 
             <li class="menu_list">
 					<div class="menu_list_name">
-                            <img class="list_icon" src="{% static 'baotou/image/gis/guide/home_icon.png'%}" alt=""/>
+                            <img class="list_icon" src="{% static 'baotou/image/gis/guide/地图切换.png'%}" alt=""/>
                          地图切换
                         <img class="list_array" src="{% static 'baotou/image/gis/array.png'%}" alt=""/>
 					</div>
@@ -246,16 +246,16 @@
 
     <div id="mobile_control" class="div_menu" >
             <div class="div_title" id="rtu_title">
-                    <span>终端列表</span>
-                    <span>集中器列表</span>
+                    <span onclick="terminal_table_show()">终端列表</span>
+                    <span onclick="lamp_table_show()">集中器列表</span>
                     <img src="{% static 'baotou/image/gis/close.png' %}" onclick="mobile_control_close()"
                          class="button_close" />
             </div>
             <div id="terminal_and_lamp">
                     <table class="table table-striped" id="terminal_and_lamp_table" >
-                            <thead><tr><th><input type="checkbox" onclick="terminal_and_lamp_selectall(this)">
+                            <thead><tr><th style="width:20px"><input type="checkbox" onclick="terminal_and_lamp_selectall(this)">
                                             </th><th>终端ID</th>
-                                            <th>终端名称</th><th>物理地址</th></thead>
+                                            <th>名称</th><th>物理地址</th></thead>
                             <tbody></tbody>
                     </table>
             </div>

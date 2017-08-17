@@ -246,16 +246,16 @@
 
     <div id="mobile_control" class="div_menu" >
             <div class="div_title" id="rtu_title">
-                    <span>终端列表</span>
-                    <span>集中器列表</span>
+                    <span onclick="terminal_table_show()">终端列表</span>
+                    <span onclick="lamp_table_show()">集中器列表</span>
                     <img src="{% static 'baotou/image/gis/close.png' %}" onclick="mobile_control_close()"
                          class="button_close" />
             </div>
             <div id="terminal_and_lamp">
                     <table class="table table-striped" id="terminal_and_lamp_table" >
-                            <thead><tr><th><input type="checkbox" onclick="terminal_and_lamp_selectall(this)">
+                            <thead><tr><th style="width:20px"><input type="checkbox" onclick="terminal_and_lamp_selectall(this)">
                                             </th><th>终端ID</th>
-                                            <th>终端名称</th><th>物理地址</th></thead>
+                                            <th>名称</th><th>物理地址</th></thead>
                             <tbody></tbody>
                     </table>
             </div>
@@ -324,7 +324,7 @@
             </div>
             <div id="loop_list">
                     <table class="table table-striped" id="loop_list_table" >
-                            <thead><tr><th>回路名称</th><th>开关量状态</th>
+                            <thead><tr><th>回路名称</th><th style="width:100px">开关量状态</th>
                                    <th>电压</th><th>电流</th><th>功率</th><th>功率因素</th></thead>
                             <tbody></tbody>
                     </table>

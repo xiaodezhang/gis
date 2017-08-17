@@ -276,10 +276,30 @@ function terminal_table_show(){
     });
 }
 
+function lamp_table_show(){
+
+    $.ajax({
+        type: "GET",
+        url: "lamp_data",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (json) {
+
+                var data = eval(json);
+                terminal_table_create(data);
+        },
+        error:function(){
+                alert("fault error");
+        }
+    });
+}
+
 function terminal_table_create(data){
 
         var terminal_table = document.getElementById("terminal_and_lamp_table");
         var tbody = terminal_table.getElementsByTagName("tbody")[0];
+
+        tbody.innerHTML = "";
         for(var i = 0;i < data.length;i++){
                 var tbody_tr = document.createElement("tr");
                 var input = document.createElement("INPUT");
