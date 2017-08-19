@@ -172,10 +172,10 @@ function task_result_show(results){
 
         for(var i = 0;i < results.length;i++){
                 layer_name.push(results[i].layerName);
-                if(results[i].feature.attributes.编号 == undefined){
+                if(results[i].feature.attributes.bh == undefined){
                         var id = '--';
                 }else{
-                        var id = results[i].feature.attributes.编号;
+                        var id = results[i].feature.attributes.bh;
                 }
                 layer_id.push(id);
         }
@@ -201,11 +201,32 @@ function list_locate(arg){
 function list_attribute_show(arg){
 
         if(locate_bool){
+
+                for(var i = 0;i < query_results.length;i++){
+                        if(query_results.features[i].attributes.layer_name == arg.target.className){
+                                break;
+                        }
+                }
                 var feature = query_results.features[arg.target.id];
                 var geometry = query_results.features[arg.target.id].geometry;
+                var attributes = query_results.features[arg.target.id].attributes;
+                var layer_name = query_results.features[arg.target.id].attributes.layer_name;
+
+                attribute_show_fun(feature,geometry,attributes,layer_name,true);
         }else{
-                var feature = task_results[arg.target.id].feature;
-                var geometry = task_results[arg.target.id].feature.geometry;
+
+                for(var i = 0;i < task_results.length;i++){
+                        if(task_results[i].feature.attributes.layer_name == arg.target.className){
+                                break;
+                        }
+                }
+                var id = parseInt(arg.target.id);
+                var feature = task_results[id+i].feature;
+                var geometry = task_results[id+i].feature.geometry;
+                var attributes = task_results[id+i].feature.attributes;
+                var layer_name = task_results[id+i].feature.attributes.layer_name;
+
+                attribute_show_fun(feature,geometry,attributes,layer_name,true);
         }
 }
 
@@ -216,11 +237,9 @@ function add_feature_to_list(layer_name,layer_id,onchange_bool){
         var tbody = table.getElementsByTagName("tbody")[0];
         
         var layers_name = new Array();
-        var layers_id= new Array();
 
         tbody.innerHTML = "";
         layers_name.push("All");
-        layers_id.push(0);
         for(var i = 0;i < layer_name.length;i++){
                 var tbody_tr = document.createElement("tr");
                 var tbody_td_name = document.createElement("td");
@@ -231,11 +250,13 @@ function add_feature_to_list(layer_name,layer_id,onchange_bool){
                 
                 img_op_locate.src = "../../static/baotou/image/gis/pictures/locate.png";
                 img_op_locate.id = i;
+                img_op_locate.className = layer_name[i];
                 img_op_locate.onclick=function(arg){
                         list_locate(arg);
                 };
                 img_op_info.src = "../../static/baotou/image/gis/pictures/AttributesWindow.png";
                 img_op_info.id = i;
+                img_op_info.className = layer_name[i];
                 img_op_info.onclick= function(arg){
                         list_attribute_show(arg);
                 };
@@ -250,7 +271,6 @@ function add_feature_to_list(layer_name,layer_id,onchange_bool){
                 tbody.appendChild(tbody_tr);
                 if(layers_name.indexOf(layer_name[i]) < 0){
                         layers_name.push(layer_name[i]);
-                        layers_id.push(layer_id[i]);
                 }
                 
         }
@@ -293,7 +313,7 @@ function mouse_click(evt){
         identify_task.execute(identify_params,attribute_show);
 }
 
-function attribute_show_fun(feature,geometry,attributes,layer_name){
+function attribute_show_fun(feature,geometry,attributes,layer_name,list_flag){
 
         var symbol = {"point":pointSymbol,"polyline":lineSymbol,"polygon":polygonSymbol};
         var geo_type = geometry.type;
@@ -322,14 +342,17 @@ function attribute_show_fun(feature,geometry,attributes,layer_name){
                 var td1_value = document.createElement("td");
                 var td2_text = document.createElement("td");
                 var td2_value = document.createElement("td");
-                var value_c = attributes[property[i]['item']] == "Null" ? "--"
-                                : attributes[property[i]['item']];
-                var value2_c = attributes[property[i+1]['item']] == "Null" ? "--"
-                                : attributes[property[i+1]['item']];
-
-                td1_text.appendChild(document.createTextNode(property[i]['item']));
+                for(var item in property[i]){
+                    var value_c = attributes[item] == "Null" ? "--"
+                                    : attributes[item];
+                    td1_text.appendChild(document.createTextNode(property[i][item]));
+                }
+                for(var item in property[i+1]){
+                    var value2_c = attributes[item] == "Null" ? "--"
+                                : attributes[item];
+                    td2_text.appendChild(document.createTextNode(property[i+1][item]));
+                }
                 td1_value.appendChild(document.createTextNode(value_c));
-                td2_text.appendChild(document.createTextNode(property[i+1]['item']));
                 td2_value.appendChild(document.createTextNode(value2_c));
                 td1_text.style.background="rgba(128,128,128,0.11)";
                 td2_text.style.background="rgba(128,128,128,0.11)";
@@ -342,6 +365,8 @@ function attribute_show_fun(feature,geometry,attributes,layer_name){
 
         $(".div_menu").css("display","none");
         $("#map_attribute_show").css("display","block");
+        if(list_flag)
+            $("#search_result").css("display","block");
 }
 
 
@@ -359,7 +384,7 @@ function attribute_show(results){
         var geometry = results[0].feature.geometry;
         var attributes = results[0].feature.attributes;
         var layer_name = results[0].layerName;
-        attribute_show_fun(feature,geometry,attributes,layer_name);
+        attribute_show_fun(feature,geometry,attributes,layer_name,false);
 }
 
 function service_onload(){

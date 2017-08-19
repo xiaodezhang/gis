@@ -784,25 +784,44 @@ function attribute_select_fill(select_aliase,select_value){
 
         var attribute_select = document.getElementById(select_aliase);
         var attribute_value_select = document.getElementById(select_value);
-        var aliases = service_feature[layer_feature_id].fieldAliases;
         var features = service_feature[layer_feature_id].features;
+        var layer_name = features[0].attributes.layer_name;
         
         attribute_select.innerHTML = "";
         attribute_value_select.innerHTML = "";
-        var i = 0;
+        var flag = true;
         var attribute_item;
-        for(var item in aliases){
-                if(i == 0){
-                        attribute_item = item;
+        var property;
+
+        for(var item in facility_property){
+                if(facility_property[item][0]['name'] == layer_name){
+                        property = facility_property[item];
+                        break;
                 }
-                i++;
-                var option = document.createElement("option");
-                option.appendChild(document.createTextNode(aliases[item]));
-                option.value = item;
-                attribute_select.appendChild(option);
         }
-        
+        if(property == null){
+                console.log("facility property searhing failed")
+                return;
+        }
+
+        for(var i = 1;i < property.length;i++){
+                for(item in property[i]){
+                        var option = document.createElement("option");
+
+                        if(flag)
+                                attribute_item = item;
+                        flag = false;
+                        option.appendChild(document.createTextNode(property[i][item]));
+                        option.value = item;
+                        attribute_select.appendChild(option);
+                }
+        }
         for(i = 0;i < features.length;i++){
+                if(features[i].attributes[attribute_item] == " " || 
+                        features[i].attributes[attribute_item] == null){
+                        continue;
+                }
+
                 var option_value = document.createElement("option");
                 option_value.appendChild(document.createTextNode(features[i].attributes[attribute_item]));
                 attribute_value_select.appendChild(option_value);
@@ -844,15 +863,42 @@ function attribute_search_attribute(attribute_text,attribute_value){
         attribute_value_select.innerHTML = "";
         var features = service_feature[layer_feature_id].features;
         var aliases = service_feature[layer_feature_id].fieldAliases;
+        var property;
 
+        for(var item in facility_property){
+                if(facility_property[item][0]['name'] == layer_text){
+                        property = facility_property[item];
+                        break;
+                }
+        }
+        if(property == null){
+                console.log("facility property searhing failed")
+                return;
+        }
+        for(var i = 0;i < property.length;i++){
+                for(var item in property[i]){
+                        if(property[i][item] == attribute_select_text){
+                                attribute_item = item;
+                        }
+                }
+        }
+
+
+        /*
         for(var item in aliases){
                 if(aliases[item] == attribute_select_text){
                         attribute_item = item;
                         break;
                 }
         }
+        */
 
         for(i = 0;i < features.length;i++){
+                if(features[i].attributes[attribute_item] == " " || 
+                        features[i].attributes[attribute_item] == null){
+                        continue;
+                }
+
                 var option_value = document.createElement("option");
                 option_value.appendChild(document.createTextNode(features[i].attributes[attribute_item]));
                 attribute_value_select.appendChild(option_value);
@@ -919,7 +965,7 @@ function blingbling(features,geometrys){
                 map.graphics.add(features[0]);
             }
             else {
-                for (var i = 0; i <features.length; i++) {
+                for (var i = 0; i < features.length; i++) {
                     features[i].setSymbol(pointSymbol1); //选中多个要素不闪烁
                     map.graphics.add(features[i]);
                     //设置地图显示范围以包括所有选中要素
@@ -939,7 +985,7 @@ function blingbling(features,geometrys){
             var lastymin = ymin;
             var lastxmax = xmax;
             var lastymax = ymax;
-            for (var i = 0; i < resultsfeature.length; i++) {
+            for (var i = 0; i < features.length; i++) {
                 if (geometrys[i].type == "polyline") {//线要素
                     features[i].setSymbol(lineSymbol);
                 }
@@ -958,7 +1004,7 @@ function blingbling(features,geometrys){
             if (lastxmin == xmin && lastymin == ymin && lastxmax == xmax && lastymax == ymax)
                 alert("查询到的结果没有空间图形");
             else {
-                extent = extent.update(xmin, ymin, xmax, ymax,feature_set.spatialReference);
+                extent = extent.update(xmin, ymin, xmax, ymax,features.spatialReference);
                 map.setExtent(extent.expand(1.1));
             }
         }
@@ -1096,10 +1142,10 @@ function search_result_layer_select(){
         if(spatial_or_attribute_flag == "spatial"){
                 for(var i = 0;i < task_results.length;i++){
                         results_layer_name.push(task_results[i].layerName)
-                        if(task_results[i].feature.attributes.编号 == undefined){
+                        if(task_results[i].feature.attributes.bh == undefined){
                                 var id = '--';
                         }else{
-                                var id = task_results[i].feature.attributes.编号;
+                                var id = task_results[i].feature.attributes.bh;
                         }
                         results_layer_id.push(id);
                 }
