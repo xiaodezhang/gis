@@ -4,6 +4,7 @@ var draw_mode = false;
 var standing_book_type;
 var query_results;
 var spatial_or_attribute_flag;
+var locate_bool;
 
 
 
@@ -112,25 +113,28 @@ function fault_table(data){
             $("#detail_all").html('<table class="table table-striped" id="fault_table"> \
                      <thead id="fault_head"><tr><th>ID</th><th>厂家名称</th><th>是否LED</th> \
                      <th>安装时间</th><th>更换时间</th><th>生命</th></tr></thead><tbody></tbody></table>');
-
+            var property = facility_property['fault_factory'];
         }else{
             $("#detail_all").html('<table class="table table-striped" id="fault_table"> \
                      <thead id="fault_head"><tr><th width="30px">ID</th><th width="60px"> \
                      故障名称</th><th width="50px">设备ID</th><th style="width:70px;">设备名称</th> \
                      <th width="60px">消除时间</th><th width="60px">物理地址</th><th width="90px"> \
                      重复报警次数</th></tr></thead><tbody></tbody></table>');
-
+            var property = facility_property['fault_table'];
         }
         var table = document.getElementById("fault_table");
         var tbody = table.getElementsByTagName("tbody")[0];
+
+        
+
         for(var i = 0;i < data.length;i++){
                 var tbody_tr = document.createElement("tr");
                 var tbody_td = new Array();
                 var tbody_td_data = new Array();
-                for(var item in data[i]){
+                for(var j = 0;j < property.length;j++){
                         var tbody_td = document.createElement("td");
-                        tbody_td.value = data[i][item];
-                        tbody_td.appendChild(document.createTextNode(data[i][item]));
+                        tbody_td.value = data[i][property[j]['item']];
+                        tbody_td.appendChild(document.createTextNode(data[i][property[j]['item']]));
                         tbody_tr.appendChild(tbody_td);
                 }
                 tbody.appendChild(tbody_tr);
@@ -298,6 +302,8 @@ function terminal_table_create(data){
 
         var terminal_table = document.getElementById("terminal_and_lamp_table");
         var tbody = terminal_table.getElementsByTagName("tbody")[0];
+
+        tbody.innerHTML = "";
         for(var i = 0;i < data.length;i++){
                 var tbody_tr = document.createElement("tr");
                 var input = document.createElement("INPUT");
@@ -610,6 +616,12 @@ function search_result_close(){
 }
 
 function layers_control_show(){
+
+        if($("#layers_control").css("display") != "none"){
+        $("#layers_control").css("display","none");
+        return
+        }
+
         $(".div_menu").css("display","none");
         $("#layers_control").css("display","block");
 }
@@ -627,6 +639,7 @@ function layers_control_select_all() {
     var inputs = document.getElementsByClassName("layers_input");
     var inputs_flag = inputs[0].checked ? "true":"";
     var layers_flag = inputs[0].checked ? true:false;
+    var visible = [];
 
     if(service_layer == null)
                 return;
@@ -634,7 +647,15 @@ function layers_control_select_all() {
     for(var i = 1;i < inputs.length;i++){
             inputs[i].checked = inputs_flag
     }
-    service_layer.setVisibility(layers_flag);
+    for(i = 0;i < service_layer.layerInfos.length;i++){
+            visible.push(i);
+    }
+    if(layers_flag){
+        service_layer.setVisibility(true);
+        service_layer.setVisibleLayers(visible);
+    }else{
+        service_layer.setVisibility(false);
+    }
 }
 
 function facility_statistics_close(){
@@ -884,45 +905,32 @@ function locate(){
         locate_query_task.execute(query,locate_query_succeeded,locate_query_failed);
 }
 
-function locate_query_succeeded(feature_set){
+function blingbling(features,geometrys){
 
-        if(feature_set.features.length <= 0){
-                console.log("locating query features is null!");
-                alert("没有查到相关记录,请检查输入是否正确!");
-                return;
-        }
-        query_results = feature_set;
-        if(map.graphics.graphics.length > 0){
-                map.graphics.clear();
-        }
-        var resultsfeature = feature_set.features;
-        currentFeature = feature_set.features[0];
         var extent = new esri.geometry.Extent();
         var xmin = 9999999999999;
         var xmax = 0;
         var ymin = 9999999999999;
         var ymax = 0;
-        if (resultsfeature[0].geometry.type == "point") {//点要素
-            if (resultsfeature.length == 1) {
-                var graphic = resultsfeature[0];
-                graphic.setSymbol(pointSymbol); //选中单个要素闪烁显示
-                map.centerAt(graphic.geometry);
-                map.graphics.add(graphic);
+        if (geometrys[0].type == "point") {//点要素
+            if (features.length == 1) {
+                features[0].setSymbol(pointSymbol); //选中单个要素闪烁显示
+                map.centerAt(geometrys[0]);
+                map.graphics.add(features[0]);
             }
             else {
-                for (var i = 0; i < resultsfeature.length; i++) {
-                    var graphic = resultsfeature[i];
-                    graphic.setSymbol(pointSymbol1); //选中多个要素不闪烁
-                    map.graphics.add(graphic);
+                for (var i = 0; i <features.length; i++) {
+                    features[i].setSymbol(pointSymbol1); //选中多个要素不闪烁
+                    map.graphics.add(features[i]);
                     //设置地图显示范围以包括所有选中要素
-                    var coor_x = resultsfeature[i].geometry.x;
-                    var coor_y = resultsfeature[i].geometry.y;
+                    var coor_x = geometrys[i].x;
+                    var coor_y = geometrys[i].y;
                     xmin = xmin > coor_x ? coor_x : xmin;
                     xmax = xmax > coor_x ? xmax : coor_x;
                     ymin = ymin > coor_y ? coor_y : ymin;
                     ymax = ymax > coor_y ? ymax : coor_y;
                 }
-                extent = extent.update(xmin, ymin, xmax, ymax,feature_set.spatialReference);
+                extent = extent.update(xmin, ymin, xmax, ymax,features.spatialReference);
                 map.setExtent(extent.expand(1.1));
             }
         }
@@ -932,16 +940,15 @@ function locate_query_succeeded(feature_set){
             var lastxmax = xmax;
             var lastymax = ymax;
             for (var i = 0; i < resultsfeature.length; i++) {
-                var graphic = resultsfeature[i];
-                if (graphic.geometry.type == "polyline") {//线要素
-                    graphic.setSymbol(lineSymbol);
+                if (geometrys[i].type == "polyline") {//线要素
+                    features[i].setSymbol(lineSymbol);
                 }
-                else if (graphic.geometry.type == "polygon") {//面要素
-                    graphic.setSymbol(polygonSymbol);
+                else if (geometrys[i].type == "polygon") {//面要素
+                    features[i].setSymbol(polygonSymbol);
                 }
-                if (resultsfeature[i].geometry.getExtent() != null) {
-                    var ext = resultsfeature[i].geometry.getExtent();
-                    map.graphics.add(graphic);
+                if (geometrys[i].getExtent() != null) {
+                    var ext = geometrys[i].getExtent();
+                    map.graphics.add(features[i]);
                     xmin = xmin > ext.xmin ? ext.xmin : xmin;
                     ymin = ymin > ext.ymin ? ext.ymin : ymin;
                     xmax = xmax > ext.xmax ? xmax : ext.xmax;
@@ -955,6 +962,28 @@ function locate_query_succeeded(feature_set){
                 map.setExtent(extent.expand(1.1));
             }
         }
+}
+
+function locate_query_succeeded(feature_set){
+
+        if(feature_set.features.length <= 0){
+                console.log("locating query features is null!");
+                alert("没有查到相关记录,请检查输入是否正确!");
+                return;
+        }
+        locate_bool = true;
+        query_results = feature_set;
+        if(map.graphics.graphics.length > 0){
+                map.graphics.clear();
+        }
+        var resultsfeature = feature_set.features;
+        var geometrys = [];
+        var features = [];
+        for(var i = 0;i < feature_set.features.length;i++){
+                features.push(feature_set.features[i]);
+                geometrys.push(feature_set.features[i].geometry);
+        }
+        blingbling(features,geometrys);
         query_results_show(feature_set);
 }
 
@@ -966,7 +995,12 @@ function query_results_show(feature_set){
 
         for(var i = 0;i < feature_set.features.length;i++){
                 layer_name.push(feature_set.features[i].attributes.layer_name);
-                layer_id.push(feature_set.features[i].attributes.OBJECTID);
+                if(feature_set.features[i].attributes.bh == undefined){
+                        var id = '--';
+                }else{
+                        var id = feature_set.features[i].attributes.bh
+                }
+                layer_id.push(id);
         }
         add_feature_to_list(layer_name,layer_id,false);
 }
@@ -1062,12 +1096,23 @@ function search_result_layer_select(){
         if(spatial_or_attribute_flag == "spatial"){
                 for(var i = 0;i < task_results.length;i++){
                         results_layer_name.push(task_results[i].layerName)
-                        results_layer_id.push(task_results[i].feature.attributes.OBJECTID);
+                        if(task_results[i].feature.attributes.编号 == undefined){
+                                var id = '--';
+                        }else{
+                                var id = task_results[i].feature.attributes.编号;
+                        }
+                        results_layer_id.push(task_results[i].feature.attributes.编号);
                 }
         }else{
                 for(var i = 0;i < query_results.features.length;i++){
                         results_layer_name.push(query_results.features[i].attributes.layer_name);
-                        results_layer_id.push(query_results.features[i].attributes.OBJECTID);
+                        if(query_results.features[i].attributes.bh == undefined){
+                                var id = '--';
+                        }else{
+                                var id = query_results.features[i].attributes.bh
+                        }
+
+                        results_layer_id.push(id);
                 }
         }
 
@@ -1079,4 +1124,53 @@ function search_result_layer_select(){
                 }
         }
         add_feature_to_list(layer_name,layer_id,true);
+}
+
+function live_road_show(){
+
+    var x = 0;  var y = 0;
+
+    if (current_geometry.type == "point") {
+        x = current_geometry.x;
+        y = current_geometry.y;
+    }
+    else if (current_geometry.type == "polygon") {
+        x = (current_geometry._extent.xmin + current_geometry._extent.xmax) / 2;
+        y = (current_geometry._extent.ymin + current_geometry._extent.ymax) / 2;
+    }
+    else if (current_geometry.type == "polyline") {
+        x = current_geometry.paths[0][current_geometry.paths[0].length - 1][0];
+        y = current_geometry.paths[0][current_geometry.paths[0].length - 1][1]; ;
+    }
+    var ggPoint = new BMap.Point(x, y);
+    var convertor = new BMap.Convertor();
+    var pointArr = [];
+    pointArr.push(ggPoint);
+    convertor.translate(pointArr, 1, 5, translateCallback);
+}
+
+function translateCallback(data) {
+
+    var x = data.points[0].lng;
+    var y = data.points[0].lat;
+    $("#jiejing_pic").html("");
+    $("#map_attribute_content").css("display", "none");
+    $("#live_road_content").css("display", "block");
+    var panoramaService = new BMap.PanoramaService();
+    panoramaService.getPanoramaByLocation(new BMap.Point(x, y), function (data) {
+        var panoramaInfo = "";
+
+        if (data == null) {
+            alert('此处没有全景地图！');
+            return;
+        }
+        panorama = new BMap.Panorama('jiejing_pic');
+        panorama.setPosition(new BMap.Point(data.position.lng, data.position.lat));
+    });
+} 
+
+function base_info_show(){
+
+        $("#map_attribute_content").css("display","block");
+        $("#live_road_content").css("display","none");
 }

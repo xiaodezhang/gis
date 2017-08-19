@@ -80,21 +80,21 @@ def standing_book_table(request):
 def fault_terminal_chart(request):
 
     cursor = sql_server_connect(False)
-    cursor.execute("SELECT DISTINCT errname,COUNT(errname) as number FROM DataErrNow GROUP BY errname") 
+    cursor.execute("SELECT DISTINCT errname,COUNT(errname) as number FROM DataErrNow where facility_type=1 GROUP BY errname") 
     data_json = json.dumps(cursor.fetchall())
     return JsonResponse(data_json,safe=False)
 
 def fault_lamp_chart(request):
 
     cursor = sql_server_connect(False)
-    cursor.execute("SELECT DISTINCT errname,COUNT(errname) as number FROM DataErrNow GROUP BY errname") 
+    cursor.execute("SELECT DISTINCT errname,COUNT(errname) as number FROM DataErrNow where facility_type=6 GROUP BY errname") 
     data_json = json.dumps(cursor.fetchall())
     return JsonResponse(data_json,safe=False)
 
 def fault_factory_chart(request):
 
     cursor = sql_server_connect(False)
-    cursor.execute("SELECT DISTINCT facname,COUNT(facname) as number FROM DataFactory GROUP BY facname") 
+    cursor.execute("SELECT DISTINCT TOP 20 facname,COUNT(facname) as number FROM DataFactory GROUP BY facname") 
     data_json = json.dumps(cursor.fetchall())
     return JsonResponse(data_json,safe=False)
 
@@ -102,7 +102,7 @@ def fault_factory_chart(request):
 def fault_terminal_table(request):
 
     cursor = sql_server_connect(False)
-    cursor.execute("SELECT errid,errname,tmlid,tmlname,dtremove,phyid,errcount FROM DataErrNow") 
+    cursor.execute("SELECT errid,errname,tmlid,tmlname,dtremove,phyid,errcount FROM DataErrNow where facility_type=1") 
     data_json = json.dumps(cursor.fetchall())
     return JsonResponse(data_json,safe=False)
 
@@ -115,7 +115,7 @@ def fault_lamp_table(request):
 
 def fault_factory_table(request):
 
-    cursor = sql_server_connect(True)
+    cursor = sql_server_connect(False)
     cursor.execute("SELECT * FROM DataFactory") 
     data_json = json.dumps(cursor.fetchall())
     return JsonResponse(data_json,safe=False)

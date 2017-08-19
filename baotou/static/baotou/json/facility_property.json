@@ -78,5 +78,22 @@
             {"item":"所属养护区"},
             {"item":"所属维修队"},
             {"item":"阈值"}
+        ],
+        "fault_table":[
+            {"item":"errid"},
+            {"item":"errname"},
+            {"item":"tmlid"},
+            {"item":"tmlname"},
+            {"item":"dtremove"},
+            {"item":"phyid"},
+            {"item":"errcount"}
+        ],
+        "fault_factory":[
+            {"item":"facid"},
+            {"item":"facname"},
+            {"item":"ledbool"},
+            {"item":"installtime"},
+            {"item":"changetime"},
+            {"item":"lifetime"}
         ]
 }

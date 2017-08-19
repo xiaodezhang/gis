@@ -696,9 +696,10 @@ img.tool_bar_image{
 }
 
 
-#map_attribute_content{
+.map_content_show{
         width:700px;
-        height:430px;
+        height:510px;
+        float:left;
 }
 
 #map_attribute_image_div{
