@@ -26,9 +26,9 @@
         ],
         "meter":[
             {"name":"计控箱"},
-            {"BH":"编号"},
+            {"bh":"编号"},
             {"JKXMC":"计控箱名称"},
-            {"SSDL":"所属道路"},
+            {"ssdl":"所属道路"},
             {"PDXLX":"配电箱类型"},
             {"HLS":"回路数"},
             {"GL":"功率"},
@@ -81,7 +81,7 @@
         "video_point":[
             {"name":"视频点"},
             {"IP":"IP"},
-            {"layer_name":"图层名"}
+            {"video_name":"视频点名称"}
         ],
         "fault_table":[
             {"item":"errid"},
@@ -99,5 +99,13 @@
             {"item":"installtime"},
             {"item":"changetime"},
             {"item":"lifetime"}
+        ],
+        "loop_list":[
+            {"item":"loopname"},
+            {"item":"switch_in_st"},
+            {"item":"voltage"},
+            {"item":"current_rtu"},
+            {"item":"power"},
+            {"item":"factor"}
         ]
 }

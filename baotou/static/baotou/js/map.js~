@@ -21,6 +21,7 @@ var xmax = 110.068;
 var ymin = 40.528;
 var ymax = 40.705;
 var map_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_ditu/MapServer";
+//var map_url = "http://10.18.3.65:33819/ArcGIS/rest/services/baotou_ditu/MapServer";
 var service_url = "http://10.18.3.65:33819/ArcGIS/rest/services/baotou_yewu/MapServer";
 var sat_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_yingxiang/MapServer"
 var identify_params;
@@ -207,10 +208,11 @@ function list_attribute_show(arg){
                                 break;
                         }
                 }
-                var feature = query_results.features[arg.target.id];
-                var geometry = query_results.features[arg.target.id].geometry;
-                var attributes = query_results.features[arg.target.id].attributes;
-                var layer_name = query_results.features[arg.target.id].attributes.layer_name;
+                var id = parseInt(arg.target.id);
+                var feature = query_results.features[id+i];
+                var geometry = query_results.features[id+i].geometry;
+                var attributes = query_results.features[id+i].attributes;
+                var layer_name = query_results.features[id+i].attributes.layer_name;
 
                 attribute_show_fun(feature,geometry,attributes,layer_name,true);
         }else{

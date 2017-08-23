@@ -7,8 +7,7 @@ import pymssql
 import json
 
 
-serverip = "10.18.3.65"
-serverip_bt = "10.18.3.87"
+serverip = "10.18.3.87"
 user = "sa"
 password = "sa"
 db_name = "sde"
@@ -19,11 +18,9 @@ def sql_server_connect(flag):
     try:
         if flag:
                 db = db_name
-                ip = serverip
         else:
                 db = db_name_bt
-                ip = serverip_bt
-        conn = pymssql.connect(ip,user,password,db)
+        conn = pymssql.connect(serverip,user,password,db)
         cursor = conn.cursor(as_dict=True)
         return cursor
     except:
@@ -109,7 +106,7 @@ def fault_terminal_table(request):
 def fault_lamp_table(request):
 
     cursor = sql_server_connect(False)
-    cursor.execute("SELECT errid,errname,tmlid,tmlname,dtremove,phyid,errcount FROM DataErrNow") 
+    cursor.execute("SELECT errid,errname,tmlid,tmlname,dtremove,phyid,errcount FROM DataErrNow where facility_type=6") 
     data_json = json.dumps(cursor.fetchall())
     return JsonResponse(data_json,safe=False)
 

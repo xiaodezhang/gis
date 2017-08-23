@@ -315,7 +315,7 @@
             </div>
             <div id="loop_list">
                     <table class="table table-striped" id="loop_list_table" >
-                            <thead><tr><th>回路名称</th><th style="width:100px">开关量状态</th>
+                            <thead><tr><th width="120px">回路名称</th><th style="width:100px">开关量状态</th>
                                    <th>电压</th><th>电流</th><th>功率</th><th>功率因素</th></thead>
                             <tbody></tbody>
                     </table>
@@ -358,7 +358,7 @@
 
     <div id="map_attribute_show" class="div_menu">
            <div id="map_attribute_title" class="div_title">
-               <span onclick="base_info_show">基础信息</span>
+               <span onclick="base_info_show()">基础信息</span>
                <img src="{% static 'baotou/image/gis/间隔线.png'%}" />
                <span onclick="live_road_show()">街道实景</span>
                <img src="{% static 'baotou/image/gis/间隔线.png'%}" />
@@ -370,6 +370,10 @@
            <div id="map_attribute_content">
                    <div id="map_attribute_left">
                            <div id="map_attribute_image_div"><img id="map_attribute_image" src="{% static 'baotou/image/gis/暂无图片.png'%}" /></div>
+                           <div id="map_attribute_relationship">
+                                   <button class="btn btn-default map_attribute_btn">维修记录</button><br>
+                                   <button class="btn btn-default map_attribute_btn">所属计控箱</button>
+                           </div>
                    </div>
                    <div id="map_attribute_right">
                            <table class="table table-bordered" id="map_attribute_table"><tbody></tbody></table>

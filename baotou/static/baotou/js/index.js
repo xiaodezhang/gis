@@ -356,6 +356,7 @@ function terminal_loop_table_create(data){
 
         var loop_table = document.getElementById("loop_list_table");
         var tbody = loop_table.getElementsByTagName("tbody")[0];
+        var property = facility_property['loop_list'];
 
         tbody.innerHTML="";
         for(var i = 0;i < data.length;i++){
@@ -363,12 +364,21 @@ function terminal_loop_table_create(data){
                 var tbody_td = new Array();
                 var tbody_td_data = new Array();
 
+                for(var j = 0;j < property.length;j++){
+                        var tbody_td = document.createElement("td");
+                        tbody_td.value = data[i][property[j]['item']];
+                        tbody_td.appendChild(document.createTextNode(data[i][property[j]['item']]));
+                        tbody_tr.appendChild(tbody_td);
+                }
+
+                /*
                 for(var item in data[i]){
                         var tbody_td = document.createElement("td");
                         tbody_td.value = data[i][item];
                         tbody_td.appendChild(document.createTextNode(data[i][item]));
                         tbody_tr.appendChild(tbody_td);
                 }
+                */
                 tbody.appendChild(tbody_tr);
         }
 }
@@ -844,6 +854,7 @@ function attribute3_aliase_onchange() {
         attribute_search_attribute("attribute_select3","attribute_value_select3");
 }       
 
+
 function attribute_search_attribute(attribute_text,attribute_value){
 
         if(service_feature.length != service_layer.layerInfos.length){
@@ -862,7 +873,6 @@ function attribute_search_attribute(attribute_text,attribute_value){
         layer_feature_id = attribute_search_layer_id(layer_text);
         attribute_value_select.innerHTML = "";
         var features = service_feature[layer_feature_id].features;
-        var aliases = service_feature[layer_feature_id].fieldAliases;
         var property;
 
         for(var item in facility_property){
@@ -882,24 +892,13 @@ function attribute_search_attribute(attribute_text,attribute_value){
                         }
                 }
         }
-
-
-        /*
-        for(var item in aliases){
-                if(aliases[item] == attribute_select_text){
-                        attribute_item = item;
-                        break;
-                }
-        }
-        */
-
         for(i = 0;i < features.length;i++){
                 if(features[i].attributes[attribute_item] == " " || 
                         features[i].attributes[attribute_item] == null){
                         continue;
                 }
-
                 var option_value = document.createElement("option");
+
                 option_value.appendChild(document.createTextNode(features[i].attributes[attribute_item]));
                 attribute_value_select.appendChild(option_value);
         }

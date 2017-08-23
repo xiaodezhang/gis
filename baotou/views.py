@@ -7,8 +7,7 @@ import pymssql
 import json
 
 
-serverip = "10.18.3.65"
-serverip_bt = "10.18.3.87"
+serverip = "10.18.3.87"
 user = "sa"
 password = "sa"
 db_name = "sde"
@@ -19,11 +18,9 @@ def sql_server_connect(flag):
     try:
         if flag:
                 db = db_name
-                ip = serverip
         else:
                 db = db_name_bt
-                ip = serverip_bt
-        conn = pymssql.connect(ip,user,password,db)
+        conn = pymssql.connect(serverip,user,password,db)
         cursor = conn.cursor(as_dict=True)
         return cursor
     except:
@@ -137,7 +134,7 @@ def facility_property(request):
 
 def maintain_record(request):
     try:
-        conn = pymssql.connect("192.168.50.80","sa","sa","flow_common")
+        conn = pymssql.connect(serverip,user,password,"flow_common")
         cursor = conn.cursor(as_dict=True)
     except:
         print "db connect failed"

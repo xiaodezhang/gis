@@ -728,3 +728,11 @@ img.tool_bar_image{
 #facility_statistics_table{
         padding:20px 0;
 }
+
+#map_attribute_relationship{
+        padding-left:20px;
+}
+
+.map_attribute_btn{
+        margin-bottom:5px;
+}
