@@ -28,7 +28,8 @@ def sql_server_connect(flag):
 
 def index(request):
 
-    context = {}
+    context = {'host':request.get_host}
+    print request.get_host()
     return render(request,'baotou/index.html',context)
 #    return HttpResponse("hello django");
 

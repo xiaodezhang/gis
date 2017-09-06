@@ -29,6 +29,7 @@ def sql_server_connect(flag):
 def index(request):
 
     context = {}
+    print request.get_host()
     return render(request,'baotou/index.html',context)
 #    return HttpResponse("hello django");
 
@@ -134,7 +135,7 @@ def facility_property(request):
 
 def maintain_record(request):
     try:
-        conn = pymssql.connect("192.168.50.80","sa","sa","flow_common")
+        conn = pymssql.connect(serverip,user,password,"flow_common")
         cursor = conn.cursor(as_dict=True)
     except:
         print "db connect failed"
