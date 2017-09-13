@@ -20,11 +20,12 @@ var xmin = 109.729;
 var xmax = 110.068;
 var ymin = 40.528;
 var ymax = 40.705;
-//var map_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_ditu/MapServer";
+var map_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_ditu/MapServer";
 //var map_url = "http://218.202.66.19:33819/ArcGIS/rest/services/baotou_ditu/MapServer";
-var map_url = "http://10.18.3.65:33819/ArcGIS/rest/services/baotou_ditu/MapServer";
+//var map_url = "http://10.18.3.65:33819/ArcGIS/rest/services/baotou_ditu/MapServer";
 //var service_url = "http://218.202.66.19:33819/ArcGIS/rest/services/baotou_yewu/MapServer";
-var service_url = "http://10.18.3.65:33819/ArcGIS/rest/services/baotou_yewu/MapServer";
+//var service_url = "http://10.18.3.65:33819/ArcGIS/rest/services/baotou_yewu/MapServer";
+var service_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_yewu/MapServer";
 var sat_url = "http://114.80.168.38:64813/ArcGIS/rest/services/baotou_yingxiang/MapServer"
 var identify_params;
 var identify_task;
@@ -55,6 +56,8 @@ $(document).ready(function(){
 function map_load(){
 
         var extent = new esri.geometry.Extent({"xmin":xmin,"xmax":xmax,"ymin":40.528,"ymax":ymax});
+
+        get_facility_property();
         map = new esri.Map("right_bar",{extent:extent,logo:false});
         map_layer = new esri.layers.ArcGISDynamicMapServiceLayer(map_url);
         service_layer = new esri.layers.ArcGISDynamicMapServiceLayer(service_url);
@@ -80,7 +83,6 @@ function map_load(){
         dojo.connect(map_tool_bar, "onDrawEnd",draw_end); //监听制图事件
         dojo.connect(service_layer, "onLoad",service_onload);
         statistics_flag = false;
-        get_facility_property();
 }
 
 function get_facility_property(){
@@ -90,6 +92,7 @@ function get_facility_property(){
         url:"facility_property",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
+        async:false,
         success: function (json) {
 
                 facility_property = eval(json);
