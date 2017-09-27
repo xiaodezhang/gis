@@ -3,23 +3,25 @@
 from django.shortcuts import render
 from django.http import HttpResponse,JsonResponse
 from django.views.decorators.clickjacking import xframe_options_exempt
+import os
+from django.conf import settings
 import pymssql
 import json
 
 
-serverip = "10.18.3.87"
+serverip = "192.168.51.141"
 user = "sa"
-password = "sa"
-db_name = "sde"
+password = "CeTc50"
+db_name = "middleWare"
 db_name_bt = "sde_bt"
 
 # Create your views here.
 def sql_server_connect(flag):
     try:
         if flag:
-                db = db_name
-        else:
                 db = db_name_bt
+        else:
+                db = db_name
         conn = pymssql.connect(serverip,user,password,db)
         cursor = conn.cursor(as_dict=True)
         return cursor
@@ -129,7 +131,8 @@ def terminal_loop_info(request):
 
 def facility_property(request):
 
-    file_json = open("baotou/static/baotou/json/facility_property.json")
+    
+    file_json = open(os.path.join(settings.PROJECT_ROOT,"facility_property.json"))
     data_json = json.load(file_json)
     return JsonResponse(data_json,safe=False)
 
